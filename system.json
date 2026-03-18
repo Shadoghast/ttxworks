@@ -38,6 +38,9 @@
       "system": "ttxworks"
     }
   ],
+  "manifest": "https://raw.githubusercontent.com/Shadoghast/ttxworks/main/system.json",
+  "download": "https://github.com/Shadoghast/ttxworks/archive/refs/heads/main.zip",
+  "url": "https://github.com/Shadoghast/ttxworks",
   "socket": false,
   "initiative": "1d100",
   "grid": {
