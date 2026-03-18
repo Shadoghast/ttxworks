@@ -1,0 +1,15 @@
+{
+  "_id": "TmrPy1GhQhHKyy8m",
+  "name": "Regulatory Compliance",
+  "type": "skill",
+  "system": {
+    "category": "Governance, Risk & Compliance (GRC)",
+    "description": "<p>Navigate applicable regulatory requirements (HIPAA, PCI-DSS, GDPR, SOX, etc.) during an incident. Ensures notifications, documentation, and response actions satisfy legal obligations.</p>",
+    "bonus": 10
+  },
+  "img": "icons/svg/item-bag.svg",
+  "effects": [],
+  "flags": {},
+  "folder": null,
+  "sort": 1900000
+}

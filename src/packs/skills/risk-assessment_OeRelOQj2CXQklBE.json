@@ -1,0 +1,15 @@
+{
+  "_id": "OeRelOQj2CXQklBE",
+  "name": "Risk Assessment",
+  "type": "skill",
+  "system": {
+    "category": "Governance, Risk & Compliance (GRC)",
+    "description": "<p>Evaluate the likelihood and impact of threats to organizational assets. Informs prioritization decisions during incidents and helps leadership communicate business risk to stakeholders.</p>",
+    "bonus": 10
+  },
+  "img": "icons/svg/item-bag.svg",
+  "effects": [],
+  "flags": {},
+  "folder": null,
+  "sort": 1700000
+}

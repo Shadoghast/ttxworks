@@ -1,0 +1,20 @@
+{
+  "_id": "lSOHuIQzzZVbfBv3",
+  "name": "Security Info & Event Mgmt (SIEM)",
+  "type": "asset",
+  "system": {
+    "category": "software",
+    "sourceDomain": "Security Operations Platform",
+    "description": "<p><strong>Benefit:</strong> Enables the SIEM Operation skill and multi-source Log Analysis. Without this asset, any action requiring correlation of logs from multiple sources is automatically Desperate Position with Limited Effect.</p>",
+    "status": "ready",
+    "bonus": 0,
+    "usesPerScenario": null,
+    "usesRemaining": null,
+    "focusCostToActivate": null
+  },
+  "img": "icons/svg/item-bag.svg",
+  "effects": [],
+  "flags": {},
+  "folder": null,
+  "sort": 800000
+}

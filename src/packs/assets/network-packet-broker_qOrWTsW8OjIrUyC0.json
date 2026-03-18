@@ -1,0 +1,20 @@
+{
+  "_id": "qOrWTsW8OjIrUyC0",
+  "name": "Network Packet Broker",
+  "type": "asset",
+  "system": {
+    "category": "hardware",
+    "sourceDomain": "Network Visibility & Monitoring",
+    "description": "<p><strong>Benefit:</strong> Log Analysis failures become Complications instead of Failures when this asset is active. The packet broker ensures complete traffic capture that catches what SIEM correlation misses.</p>",
+    "status": "ready",
+    "bonus": 0,
+    "usesPerScenario": null,
+    "usesRemaining": null,
+    "focusCostToActivate": null
+  },
+  "img": "icons/svg/item-bag.svg",
+  "effects": [],
+  "flags": {},
+  "folder": null,
+  "sort": 200000
+}

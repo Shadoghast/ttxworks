@@ -1,0 +1,15 @@
+{
+  "_id": "TaW5s6QX6BKu5zJ3",
+  "name": "Infrastructure Engineering",
+  "type": "skill",
+  "system": {
+    "category": "Engineering & Architecture",
+    "description": "<p>Design and maintain the technical infrastructure — servers, storage, networking equipment, and supporting systems — that underpin business operations. Enables rapid reconfiguration during crises.</p>",
+    "bonus": 10
+  },
+  "img": "icons/svg/item-bag.svg",
+  "effects": [],
+  "flags": {},
+  "folder": null,
+  "sort": 1200000
+}

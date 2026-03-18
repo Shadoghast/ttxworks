@@ -1,0 +1,15 @@
+{
+  "_id": "czad2TgVXQADg3PN",
+  "name": "Incident Command",
+  "type": "skill",
+  "system": {
+    "category": "Leadership & Communication",
+    "description": "<p>Lead and coordinate the overall incident response effort using structured command principles (ICS/NIMS or equivalent). Establish clear chains of command, priorities, and decision authority.</p>",
+    "bonus": 10
+  },
+  "img": "icons/svg/item-bag.svg",
+  "effects": [],
+  "flags": {},
+  "folder": null,
+  "sort": 2100000
+}

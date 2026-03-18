@@ -1,0 +1,15 @@
+{
+  "_id": "3qdb810382Xw5uE6",
+  "name": "Physical Security Systems",
+  "type": "skill",
+  "system": {
+    "category": "Physical & Personnel Security",
+    "description": "<p>Operate and interpret data from physical security systems — access control, CCTV, alarms, and sensors. Supports investigations, lockdowns, and evidence collection involving physical access events.</p>",
+    "bonus": 10
+  },
+  "img": "icons/svg/item-bag.svg",
+  "effects": [],
+  "flags": {},
+  "folder": null,
+  "sort": 3100000
+}

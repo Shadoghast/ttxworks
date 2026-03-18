@@ -1,0 +1,15 @@
+{
+  "_id": "Hk6mbE8KDRBh8fpR",
+  "name": "Cloud Security",
+  "type": "skill",
+  "system": {
+    "category": "Engineering & Architecture",
+    "description": "<p>Secure cloud infrastructure and services across IaaS, PaaS, and SaaS environments. Covers identity federation, misconfiguration identification, data protection, and cloud-native incident response.</p>",
+    "bonus": 10
+  },
+  "img": "icons/svg/item-bag.svg",
+  "effects": [],
+  "flags": {},
+  "folder": null,
+  "sort": 900000
+}

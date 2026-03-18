@@ -1,0 +1,15 @@
+{
+  "_id": "Jyj2SGKMlPVsH4td",
+  "name": "Executive Comms",
+  "type": "skill",
+  "system": {
+    "category": "Leadership & Communication",
+    "description": "<p>Communicate incident status, risk, and decision options clearly to C-suite and board stakeholders. Translate technical findings into business impact terms and provide decision-ready briefings.</p>",
+    "bonus": 10
+  },
+  "img": "icons/svg/item-bag.svg",
+  "effects": [],
+  "flags": {},
+  "folder": null,
+  "sort": 2300000
+}

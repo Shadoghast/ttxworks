@@ -1,0 +1,15 @@
+{
+  "_id": "TQDgVUq94QUZPojJ",
+  "name": "Network Architecture",
+  "type": "skill",
+  "system": {
+    "category": "Engineering & Architecture",
+    "description": "<p>Design, understand, and modify network topologies, segmentation strategies, and communication flows. Critical for isolating compromised segments and redirecting traffic during incidents.</p>",
+    "bonus": 10
+  },
+  "img": "icons/svg/item-bag.svg",
+  "effects": [],
+  "flags": {},
+  "folder": null,
+  "sort": 800000
+}

@@ -1,0 +1,15 @@
+{
+  "_id": "bvKr0wcGFn5w7cnN",
+  "name": "Law Enforcement Liaison",
+  "type": "skill",
+  "system": {
+    "category": "Leadership & Communication",
+    "description": "<p>Coordinate with law enforcement agencies (FBI, USSS, local police, etc.) during and after an incident. Navigate evidence preservation requirements and support criminal investigations.</p>",
+    "bonus": 10
+  },
+  "img": "icons/svg/item-bag.svg",
+  "effects": [],
+  "flags": {},
+  "folder": null,
+  "sort": 2500000
+}

@@ -1,0 +1,20 @@
+{
+  "_id": "fT2229olW2ektDiD",
+  "name": "Private Security Guard Force",
+  "type": "asset",
+  "system": {
+    "category": "service",
+    "sourceDomain": "Physical Security Services",
+    "description": "<p><strong>Benefit:</strong> +10% TN to Site Security & Access Control and Evidence Preservation rolls. Once per scene, spend 1 Focus to automatically resist one physical intrusion consequence — the guards intercept it.</p>",
+    "status": "ready",
+    "bonus": 10,
+    "usesPerScenario": null,
+    "usesRemaining": null,
+    "focusCostToActivate": 1
+  },
+  "img": "icons/svg/item-bag.svg",
+  "effects": [],
+  "flags": {},
+  "folder": null,
+  "sort": 1600000
+}

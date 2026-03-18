@@ -1,0 +1,15 @@
+{
+  "_id": "Vdt9gt2H9jybTpPH",
+  "name": "Incident Triage",
+  "type": "skill",
+  "system": {
+    "category": "Security Operations (SecOps)",
+    "description": "<p>Rapidly assess and prioritize security incidents based on severity, scope, and business impact. Used to determine whether an event is a true incident, assign severity level, and mobilize appropriate resources.</p>",
+    "bonus": 10
+  },
+  "img": "icons/svg/item-bag.svg",
+  "effects": [],
+  "flags": {},
+  "folder": null,
+  "sort": 0
+}

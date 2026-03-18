@@ -1,0 +1,15 @@
+{
+  "_id": "US5Zctp2mYuSPFQ4",
+  "name": "Logistics Management",
+  "type": "skill",
+  "system": {
+    "category": "Emergency Management & Logistics",
+    "description": "<p>Procure, track, and distribute equipment, supplies, and personnel to support incident operations. Critical during extended incidents requiring resource mobilization across locations.</p>",
+    "bonus": 10
+  },
+  "img": "icons/svg/item-bag.svg",
+  "effects": [],
+  "flags": {},
+  "folder": null,
+  "sort": 2700000
+}

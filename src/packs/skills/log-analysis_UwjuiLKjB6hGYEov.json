@@ -1,0 +1,15 @@
+{
+  "_id": "UwjuiLKjB6hGYEov",
+  "name": "Log Analysis",
+  "type": "skill",
+  "system": {
+    "category": "Security Operations (SecOps)",
+    "description": "<p>Review, parse, and interpret log data from systems, networks, and applications to identify indicators of compromise, reconstruct timelines, and support forensic investigations.</p>",
+    "bonus": 10
+  },
+  "img": "icons/svg/item-bag.svg",
+  "effects": [],
+  "flags": {},
+  "folder": null,
+  "sort": 100000
+}

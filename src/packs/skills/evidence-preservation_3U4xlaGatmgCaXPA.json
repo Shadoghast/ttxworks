@@ -1,0 +1,15 @@
+{
+  "_id": "3U4xlaGatmgCaXPA",
+  "name": "Evidence Preservation",
+  "type": "skill",
+  "system": {
+    "category": "Physical & Personnel Security",
+    "description": "<p>Preserve physical evidence at incident scenes in a chain-of-custody manner. Ensures physical artifacts remain admissible for law enforcement, insurance, and legal proceedings.</p>",
+    "bonus": 10
+  },
+  "img": "icons/svg/item-bag.svg",
+  "effects": [],
+  "flags": {},
+  "folder": null,
+  "sort": 3400000
+}

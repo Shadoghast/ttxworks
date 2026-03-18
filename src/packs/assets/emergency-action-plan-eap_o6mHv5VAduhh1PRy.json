@@ -1,0 +1,20 @@
+{
+  "_id": "o6mHv5VAduhh1PRy",
+  "name": "Emergency Action Plan (EAP)",
+  "type": "asset",
+  "system": {
+    "category": "policy",
+    "sourceDomain": "Physical Security & Emergency Management",
+    "description": "<p><strong>Benefit:</strong> The first use of the Active Threat Response or Mass Care & Sheltering skill in a scenario always starts from Controlled Position (minimum), regardless of actual circumstances. A practiced EAP means responders know exactly what to do.</p>",
+    "status": "ready",
+    "bonus": 0,
+    "usesPerScenario": 1,
+    "usesRemaining": 1,
+    "focusCostToActivate": null
+  },
+  "img": "icons/svg/item-bag.svg",
+  "effects": [],
+  "flags": {},
+  "folder": null,
+  "sort": 2000000
+}

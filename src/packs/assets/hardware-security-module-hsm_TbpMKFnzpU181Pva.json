@@ -1,0 +1,20 @@
+{
+  "_id": "TbpMKFnzpU181Pva",
+  "name": "Hardware Security Module (HSM)",
+  "type": "asset",
+  "system": {
+    "category": "hardware",
+    "sourceDomain": "Cryptographic Key Management",
+    "description": "<p><strong>Benefit:</strong> +10% TN to any action involving cryptographic key operations. The adversary can never score a Critical Success against HSM-protected encryption — critical results against those actions become standard Failures instead.</p>",
+    "status": "ready",
+    "bonus": 10,
+    "usesPerScenario": null,
+    "usesRemaining": null,
+    "focusCostToActivate": null
+  },
+  "img": "icons/svg/item-bag.svg",
+  "effects": [],
+  "flags": {},
+  "folder": null,
+  "sort": 0
+}

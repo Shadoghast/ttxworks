@@ -1,0 +1,20 @@
+{
+  "_id": "SllTUTtYBxgPCGGv",
+  "name": "Incident Response Plan (IRP)",
+  "type": "asset",
+  "system": {
+    "category": "policy",
+    "sourceDomain": "Incident Management",
+    "description": "<p><strong>Benefit:</strong> The first use of the Team Coordination or Executive Comms skill in a scenario is automatically a Full Success — no roll required. A tested, practiced plan removes uncertainty from the first critical actions.</p>",
+    "status": "ready",
+    "bonus": 0,
+    "usesPerScenario": 1,
+    "usesRemaining": 1,
+    "focusCostToActivate": null
+  },
+  "img": "icons/svg/item-bag.svg",
+  "effects": [],
+  "flags": {},
+  "folder": null,
+  "sort": 1800000
+}

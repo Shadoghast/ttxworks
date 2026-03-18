@@ -1,0 +1,15 @@
+{
+  "_id": "ymHWhu4sBHVRpd3N",
+  "name": "Damage Assessment",
+  "type": "skill",
+  "system": {
+    "category": "Emergency Management & Logistics",
+    "description": "<p>Systematically evaluate the scope and severity of damage to systems, data, facilities, or people. Produces actionable estimates for recovery planning and business impact reporting.</p>",
+    "bonus": 10
+  },
+  "img": "icons/svg/item-bag.svg",
+  "effects": [],
+  "flags": {},
+  "folder": null,
+  "sort": 2900000
+}

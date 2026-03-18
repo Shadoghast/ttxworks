@@ -1,0 +1,15 @@
+{
+  "_id": "zgeDzl6NEJH2v5mt",
+  "name": "Identity & Access Mgmt (IAM)",
+  "type": "skill",
+  "system": {
+    "category": "Engineering & Architecture",
+    "description": "<p>Manage authentication, authorization, and access controls across the enterprise. Critical for containing incidents involving compromised credentials or privilege escalation.</p>",
+    "bonus": 10
+  },
+  "img": "icons/svg/item-bag.svg",
+  "effects": [],
+  "flags": {},
+  "folder": null,
+  "sort": 1100000
+}

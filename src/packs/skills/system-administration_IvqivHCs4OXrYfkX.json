@@ -1,0 +1,15 @@
+{
+  "_id": "IvqivHCs4OXrYfkX",
+  "name": "System Administration",
+  "type": "skill",
+  "system": {
+    "category": "IT & Systems Administration",
+    "description": "<p>Manage and maintain operating systems, servers, and workstations. Enables isolation of compromised systems, application of patches, and restoration of services during incidents.</p>",
+    "bonus": 10
+  },
+  "img": "icons/svg/item-bag.svg",
+  "effects": [],
+  "flags": {},
+  "folder": null,
+  "sort": 1300000
+}

@@ -1,0 +1,20 @@
+{
+  "_id": "36g1D5EZRFXM6y5j",
+  "name": "Static App Security Testing (SAST)",
+  "type": "asset",
+  "system": {
+    "category": "software",
+    "sourceDomain": "Application Security",
+    "description": "<p><strong>Benefit:</strong> During the Debrief phase, an AppSec roll using SAST can \"patch\" one discovered vulnerability for the remainder of the scenario, preventing the adversary from exploiting it again.</p>",
+    "status": "ready",
+    "bonus": 0,
+    "usesPerScenario": 1,
+    "usesRemaining": 1,
+    "focusCostToActivate": null
+  },
+  "img": "icons/svg/item-bag.svg",
+  "effects": [],
+  "flags": {},
+  "folder": null,
+  "sort": 1100000
+}

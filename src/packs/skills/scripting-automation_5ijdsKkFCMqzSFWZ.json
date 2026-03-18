@@ -1,0 +1,15 @@
+{
+  "_id": "5ijdsKkFCMqzSFWZ",
+  "name": "Scripting & Automation",
+  "type": "skill",
+  "system": {
+    "category": "IT & Systems Administration",
+    "description": "<p>Write scripts and automated workflows to accelerate incident response tasks — bulk IOC searches, log parsing, system reconfiguration, or alert triage at scale.</p>",
+    "bonus": 10
+  },
+  "img": "icons/svg/item-bag.svg",
+  "effects": [],
+  "flags": {},
+  "folder": null,
+  "sort": 1500000
+}

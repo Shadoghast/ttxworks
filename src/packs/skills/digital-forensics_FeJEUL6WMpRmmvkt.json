@@ -1,0 +1,15 @@
+{
+  "_id": "FeJEUL6WMpRmmvkt",
+  "name": "Digital Forensics",
+  "type": "skill",
+  "system": {
+    "category": "Security Operations (SecOps)",
+    "description": "<p>Collect, preserve, and analyze digital evidence from endpoints, servers, and storage media in a forensically sound manner. Supports incident reconstruction and legal proceedings.</p>",
+    "bonus": 10
+  },
+  "img": "icons/svg/item-bag.svg",
+  "effects": [],
+  "flags": {},
+  "folder": null,
+  "sort": 200000
+}

@@ -1,0 +1,20 @@
+{
+  "_id": "AeaUpmuKHsFt39GZ",
+  "name": "Zero Trust Architecture",
+  "type": "asset",
+  "system": {
+    "category": "policy",
+    "sourceDomain": "Security Architecture",
+    "description": "<p><strong>Benefit:</strong> Spend 1 Focus to retroactively declare that a specific network segment was micro-segmented, blocking one lateral movement consequence from occurring. Can only be used once per segment per scenario.</p>",
+    "status": "ready",
+    "bonus": 0,
+    "usesPerScenario": null,
+    "usesRemaining": null,
+    "focusCostToActivate": 1
+  },
+  "img": "icons/svg/item-bag.svg",
+  "effects": [],
+  "flags": {},
+  "folder": null,
+  "sort": 1700000
+}

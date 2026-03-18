@@ -1,0 +1,15 @@
+{
+  "_id": "RwJUa8U1XeECCAwu",
+  "name": "Business Continuity",
+  "type": "skill",
+  "system": {
+    "category": "Governance, Risk & Compliance (GRC)",
+    "description": "<p>Plan and execute strategies to maintain essential business functions during and after disruptions. Includes BCP activation, alternate site operations, and continuity communication.</p>",
+    "bonus": 10
+  },
+  "img": "icons/svg/item-bag.svg",
+  "effects": [],
+  "flags": {},
+  "folder": null,
+  "sort": 1800000
+}

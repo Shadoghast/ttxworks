@@ -1,0 +1,15 @@
+{
+  "_id": "BdPSHjiuAaeS5a2A",
+  "name": "Threat Modeling",
+  "type": "skill",
+  "system": {
+    "category": "Threat Intelligence & Hunting",
+    "description": "<p>Systematically identify and evaluate threats relevant to the organization's assets, architecture, and adversaries. Informs defensive priorities and helps anticipate adversary behavior.</p>",
+    "bonus": 10
+  },
+  "img": "icons/svg/item-bag.svg",
+  "effects": [],
+  "flags": {},
+  "folder": null,
+  "sort": 400000
+}

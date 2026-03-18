@@ -1,0 +1,20 @@
+{
+  "_id": "bU3jHTy7XoQMQyeY",
+  "name": "Emergency Medical / Trauma Kits",
+  "type": "asset",
+  "system": {
+    "category": "hardware",
+    "sourceDomain": "Medical Preparedness",
+    "description": "<p><strong>Benefit:</strong> Trauma First Aid failures become Complications instead of Failures. Stocked kits with tourniquets, hemostatic agents, and AEDs give responders the tools to stabilize casualties even under pressure.</p>",
+    "status": "ready",
+    "bonus": 0,
+    "usesPerScenario": null,
+    "usesRemaining": null,
+    "focusCostToActivate": null
+  },
+  "img": "icons/svg/item-bag.svg",
+  "effects": [],
+  "flags": {},
+  "folder": null,
+  "sort": 600000
+}

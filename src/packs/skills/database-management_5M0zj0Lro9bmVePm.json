@@ -1,0 +1,15 @@
+{
+  "_id": "5M0zj0Lro9bmVePm",
+  "name": "Database Management",
+  "type": "skill",
+  "system": {
+    "category": "IT & Systems Administration",
+    "description": "<p>Administer, secure, and recover databases. Critical for assessing data exposure, restoring from backup, and identifying unauthorized access or exfiltration attempts.</p>",
+    "bonus": 10
+  },
+  "img": "icons/svg/item-bag.svg",
+  "effects": [],
+  "flags": {},
+  "folder": null,
+  "sort": 1400000
+}

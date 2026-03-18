@@ -1,0 +1,15 @@
+{
+  "_id": "EFZIh7TaWLKQxsM3",
+  "name": "Finance & Administration",
+  "type": "skill",
+  "system": {
+    "category": "Emergency Management & Logistics",
+    "description": "<p>Track incident costs, manage emergency procurement, coordinate with insurers, and maintain financial documentation required for reimbursement, audits, and regulatory filings.</p>",
+    "bonus": 10
+  },
+  "img": "icons/svg/item-bag.svg",
+  "effects": [],
+  "flags": {},
+  "folder": null,
+  "sort": 2800000
+}

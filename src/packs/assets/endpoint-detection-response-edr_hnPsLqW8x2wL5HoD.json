@@ -1,0 +1,20 @@
+{
+  "_id": "hnPsLqW8x2wL5HoD",
+  "name": "Endpoint Detection & Response (EDR)",
+  "type": "asset",
+  "system": {
+    "category": "software",
+    "sourceDomain": "Endpoint Protection Platform",
+    "description": "<p><strong>Benefit:</strong> +10% TN to Threat Hunting and Digital Forensics rolls. Once per scenario, can remotely isolate a compromised endpoint as a Desperate action (no roll needed, but costs 2 Focus and triggers a 4-segment Clock for adversary pivot attempts).</p>",
+    "status": "ready",
+    "bonus": 10,
+    "usesPerScenario": null,
+    "usesRemaining": null,
+    "focusCostToActivate": null
+  },
+  "img": "icons/svg/item-bag.svg",
+  "effects": [],
+  "flags": {},
+  "folder": null,
+  "sort": 700000
+}

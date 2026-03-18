@@ -1,0 +1,20 @@
+{
+  "_id": "mOq4a3smca90jurO",
+  "name": "Advanced Sandbox",
+  "type": "asset",
+  "system": {
+    "category": "software",
+    "sourceDomain": "Malware Analysis",
+    "description": "<p><strong>Benefit:</strong> +10% TN to Malware Analysis rolls. Additionally, any malware submitted to the sandbox automatically reveals basic network indicators of compromise (C2 IPs, domains) without requiring a roll — the GM provides this information freely.</p>",
+    "status": "ready",
+    "bonus": 10,
+    "usesPerScenario": null,
+    "usesRemaining": null,
+    "focusCostToActivate": null
+  },
+  "img": "icons/svg/item-bag.svg",
+  "effects": [],
+  "flags": {},
+  "folder": null,
+  "sort": 1200000
+}

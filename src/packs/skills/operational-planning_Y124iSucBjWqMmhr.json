@@ -1,0 +1,15 @@
+{
+  "_id": "Y124iSucBjWqMmhr",
+  "name": "Operational Planning",
+  "type": "skill",
+  "system": {
+    "category": "Emergency Management & Logistics",
+    "description": "<p>Develop and execute structured response plans across short and long time horizons. Coordinates resource allocation, sequencing of actions, and contingency options under uncertainty.</p>",
+    "bonus": 10
+  },
+  "img": "icons/svg/item-bag.svg",
+  "effects": [],
+  "flags": {},
+  "folder": null,
+  "sort": 2600000
+}

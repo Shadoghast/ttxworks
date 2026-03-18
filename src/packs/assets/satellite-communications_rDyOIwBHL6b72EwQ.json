@@ -1,0 +1,20 @@
+{
+  "_id": "rDyOIwBHL6b72EwQ",
+  "name": "Satellite Communications",
+  "type": "asset",
+  "system": {
+    "category": "hardware",
+    "sourceDomain": "Alternate Communications",
+    "description": "<p><strong>Benefit:</strong> Ignore the first complication that would arise from loss of primary communications infrastructure. Satcom provides an out-of-band channel unaffected by network incidents or physical damage to terrestrial links.</p>",
+    "status": "ready",
+    "bonus": 0,
+    "usesPerScenario": null,
+    "usesRemaining": null,
+    "focusCostToActivate": null
+  },
+  "img": "icons/svg/item-bag.svg",
+  "effects": [],
+  "flags": {},
+  "folder": null,
+  "sort": 400000
+}

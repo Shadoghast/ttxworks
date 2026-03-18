@@ -1,0 +1,15 @@
+{
+  "_id": "hm5e0yEvOfgQyTEG",
+  "name": "Public Information",
+  "type": "skill",
+  "system": {
+    "category": "Leadership & Communication",
+    "description": "<p>Manage external communications including press releases, social media, customer notifications, and media inquiries. Protects organizational reputation while meeting disclosure obligations.</p>",
+    "bonus": 10
+  },
+  "img": "icons/svg/item-bag.svg",
+  "effects": [],
+  "flags": {},
+  "folder": null,
+  "sort": 2400000
+}

@@ -1,0 +1,15 @@
+{
+  "_id": "L5KrMWtWqiseCi4M",
+  "name": "Policy & Standards",
+  "type": "skill",
+  "system": {
+    "category": "Governance, Risk & Compliance (GRC)",
+    "description": "<p>Develop, interpret, and apply organizational security policies, standards, and procedures. Ensures response actions align with established governance frameworks and documentation requirements.</p>",
+    "bonus": 10
+  },
+  "img": "icons/svg/item-bag.svg",
+  "effects": [],
+  "flags": {},
+  "folder": null,
+  "sort": 1600000
+}

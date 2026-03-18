@@ -1,0 +1,15 @@
+{
+  "_id": "1Jnc6vRqO3Xnp2cH",
+  "name": "Application Security (AppSec)",
+  "type": "skill",
+  "system": {
+    "category": "Engineering & Architecture",
+    "description": "<p>Identify, assess, and remediate security vulnerabilities in software applications. Includes secure code review, web application testing, API security, and vulnerability disclosure processes.</p>",
+    "bonus": 10
+  },
+  "img": "icons/svg/item-bag.svg",
+  "effects": [],
+  "flags": {},
+  "folder": null,
+  "sort": 1000000
+}

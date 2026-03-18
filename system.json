@@ -26,14 +26,14 @@
     {
       "name": "skills",
       "label": "TTXWorks Skills",
-      "path": "packs/skills",
+      "path": "packs/skills/skills",
       "type": "Item",
       "system": "ttxworks"
     },
     {
       "name": "assets",
       "label": "TTXWorks Assets",
-      "path": "packs/assets",
+      "path": "packs/assets/assets",
       "type": "Item",
       "system": "ttxworks"
     }

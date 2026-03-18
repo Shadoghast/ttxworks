@@ -1,0 +1,15 @@
+{
+  "_id": "9FJtS7oHR7e7x1J8",
+  "name": "Threat Hunting",
+  "type": "skill",
+  "system": {
+    "category": "Threat Intelligence & Hunting",
+    "description": "<p>Proactively search through networks and systems for hidden threats that have evaded automated detections. Uses hypothesis-driven techniques and knowledge of adversary TTPs.</p>",
+    "bonus": 10
+  },
+  "img": "icons/svg/item-bag.svg",
+  "effects": [],
+  "flags": {},
+  "folder": null,
+  "sort": 500000
+}

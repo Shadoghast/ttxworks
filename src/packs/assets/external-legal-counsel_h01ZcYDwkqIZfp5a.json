@@ -1,0 +1,20 @@
+{
+  "_id": "h01ZcYDwkqIZfp5a",
+  "name": "External Legal Counsel",
+  "type": "asset",
+  "system": {
+    "category": "service",
+    "sourceDomain": "Legal & Regulatory Advisory",
+    "description": "<p><strong>Benefit:</strong> +10% TN to Legal Counsel and Regulatory Compliance rolls. Outside counsel provides specialized expertise in breach notification law, privilege protection, and regulatory negotiation that internal teams may lack.</p>",
+    "status": "ready",
+    "bonus": 10,
+    "usesPerScenario": null,
+    "usesRemaining": null,
+    "focusCostToActivate": null
+  },
+  "img": "icons/svg/item-bag.svg",
+  "effects": [],
+  "flags": {},
+  "folder": null,
+  "sort": 1500000
+}

@@ -1,0 +1,20 @@
+{
+  "_id": "hi5WlO7hNIvqkjki",
+  "name": "Security Behavior & Culture Program",
+  "type": "asset",
+  "system": {
+    "category": "policy",
+    "sourceDomain": "Security Awareness & Training",
+    "description": "<p><strong>Benefit:</strong> Once per scenario, negate one complication that was caused by employee error — phishing click, misconfiguration, lost device, etc. A strong security culture means staff are less likely to make critical mistakes under pressure.</p>",
+    "status": "ready",
+    "bonus": 0,
+    "usesPerScenario": 1,
+    "usesRemaining": 1,
+    "focusCostToActivate": null
+  },
+  "img": "icons/svg/item-bag.svg",
+  "effects": [],
+  "flags": {},
+  "folder": null,
+  "sort": 2100000
+}

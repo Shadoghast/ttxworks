@@ -1,0 +1,15 @@
+{
+  "_id": "6Bl1x2OSqKAPgOox",
+  "name": "OSINT",
+  "type": "skill",
+  "system": {
+    "category": "Threat Intelligence & Hunting",
+    "description": "<p>Gather and analyze publicly available information about threats, threat actors, infrastructure, and exposed organizational assets using open-source intelligence techniques.</p>",
+    "bonus": 10
+  },
+  "img": "icons/svg/item-bag.svg",
+  "effects": [],
+  "flags": {},
+  "folder": null,
+  "sort": 700000
+}

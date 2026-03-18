@@ -1,0 +1,20 @@
+{
+  "_id": "gz0BioJgWgowgYKr",
+  "name": "Secured Backup Server",
+  "type": "asset",
+  "system": {
+    "category": "hardware",
+    "sourceDomain": "Backup & Recovery Infrastructure",
+    "description": "<p><strong>Benefit:</strong> Offline backups are immune to network-based attacks. Adversary cannot compromise this asset remotely. Restoring data from this backup requires completing a 4-segment Clock.</p>",
+    "status": "ready",
+    "bonus": 0,
+    "usesPerScenario": null,
+    "usesRemaining": null,
+    "focusCostToActivate": null
+  },
+  "img": "icons/svg/item-bag.svg",
+  "effects": [],
+  "flags": {},
+  "folder": null,
+  "sort": 100000
+}

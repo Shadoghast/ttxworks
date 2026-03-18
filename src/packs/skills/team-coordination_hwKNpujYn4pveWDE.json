@@ -1,0 +1,15 @@
+{
+  "_id": "hwKNpujYn4pveWDE",
+  "name": "Team Coordination",
+  "type": "skill",
+  "system": {
+    "category": "Leadership & Communication",
+    "description": "<p>Facilitate effective collaboration between technical and non-technical teams during an incident. Maintain shared situational awareness, resolve conflicts, and prevent task duplication.</p>",
+    "bonus": 10
+  },
+  "img": "icons/svg/item-bag.svg",
+  "effects": [],
+  "flags": {},
+  "folder": null,
+  "sort": 2200000
+}

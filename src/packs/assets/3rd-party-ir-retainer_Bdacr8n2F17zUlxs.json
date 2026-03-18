@@ -1,0 +1,20 @@
+{
+  "_id": "Bdacr8n2F17zUlxs",
+  "name": "3rd-Party IR Retainer",
+  "type": "asset",
+  "system": {
+    "category": "service",
+    "sourceDomain": "Incident Response Services",
+    "description": "<p><strong>Benefit:</strong> Once per scenario, spend 3 Focus to call in outside IR experts. This action automatically achieves Full Success on one technical action of your choice — the retainer firm handles it. The action still takes time (advance the narrative clock).</p>",
+    "status": "ready",
+    "bonus": 0,
+    "usesPerScenario": 1,
+    "usesRemaining": 1,
+    "focusCostToActivate": 3
+  },
+  "img": "icons/svg/item-bag.svg",
+  "effects": [],
+  "flags": {},
+  "folder": null,
+  "sort": 1400000
+}

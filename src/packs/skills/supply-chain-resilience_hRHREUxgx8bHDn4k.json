@@ -1,0 +1,15 @@
+{
+  "_id": "hRHREUxgx8bHDn4k",
+  "name": "Supply Chain Resilience",
+  "type": "skill",
+  "system": {
+    "category": "Emergency Management & Logistics",
+    "description": "<p>Assess and mitigate risks originating from vendors, suppliers, and third-party service providers. Activates alternate supply arrangements and manages third-party incident notifications.</p>",
+    "bonus": 10
+  },
+  "img": "icons/svg/item-bag.svg",
+  "effects": [],
+  "flags": {},
+  "folder": null,
+  "sort": 3000000
+}

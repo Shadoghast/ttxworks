@@ -1,0 +1,15 @@
+{
+  "_id": "xSRG98MOIF1nW2yq",
+  "name": "SIEM Operation",
+  "type": "skill",
+  "system": {
+    "category": "Security Operations (SecOps)",
+    "description": "<p>Query, tune, and operate a Security Information and Event Management platform. Build correlation rules, create dashboards, and investigate alerts at scale across the enterprise.</p>",
+    "bonus": 10
+  },
+  "img": "icons/svg/item-bag.svg",
+  "effects": [],
+  "flags": {},
+  "folder": null,
+  "sort": 300000
+}

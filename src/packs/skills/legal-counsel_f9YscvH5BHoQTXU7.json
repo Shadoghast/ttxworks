@@ -1,0 +1,15 @@
+{
+  "_id": "f9YscvH5BHoQTXU7",
+  "name": "Legal Counsel",
+  "type": "skill",
+  "system": {
+    "category": "Governance, Risk & Compliance (GRC)",
+    "description": "<p>Apply legal expertise to incident response — attorney-client privilege, litigation hold, regulatory notification requirements, contract obligations, and law enforcement coordination.</p>",
+    "bonus": 10
+  },
+  "img": "icons/svg/item-bag.svg",
+  "effects": [],
+  "flags": {},
+  "folder": null,
+  "sort": 2000000
+}
