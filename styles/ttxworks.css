@@ -2,8 +2,11 @@
    TTXWorks — Foundry VTT System Styles
    ============================================================ */
 
+@import url('https://fonts.googleapis.com/css2?family=Exo:ital,wght@0,100..900;1,100..900&display=swap');
+
 /* ── Variables ─────────────────────────────────────────────── */
 :root {
+  --ttx-font: "Exo", sans-serif;
   --ttx-bg:          #1a1d23;
   --ttx-bg-mid:      #22262f;
   --ttx-bg-light:    #2c3140;
@@ -24,7 +27,7 @@
 
 /* ── Base Sheet ─────────────────────────────────────────────── */
 .ttxworks.sheet {
-  font-family: "Signika", sans-serif;
+  font-family: var(--ttx-font);
   font-size: 13px;
   color: var(--ttx-text);
   background: var(--ttx-bg);
