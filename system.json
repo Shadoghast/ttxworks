@@ -1,11 +1,11 @@
 {
   "id": "ttxworks",
-  "title": "TTXWorks: A Narrative Framework for Tabletop Exercises",
+  "title": "TTXWorks",
   "description": "A narrative framework for running tabletop exercises as structured, consequence-driven simulations. Inspired by Blades in the Dark.",
-  "version": "0.1.0",
+  "version": "0.1.2",
   "compatibility": {
     "minimum": "12",
-    "verified": "12",
+    "verified": "13",
     "maximum": "13"
   },
   "authors": [
@@ -39,7 +39,7 @@
     }
   ],
   "manifest": "https://raw.githubusercontent.com/Shadoghast/ttxworks/main/system.json",
-  "download": "https://github.com/Shadoghast/ttxworks/archive/refs/heads/main.zip",
+  "download": "https://github.com/Shadoghast/ttxworks/archive/refs/tags/v0.1.2.zip",
   "url": "https://github.com/Shadoghast/ttxworks",
   "socket": false,
   "initiative": "1d100",
