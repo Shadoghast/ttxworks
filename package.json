@@ -4,8 +4,8 @@
   "description": "TTXWorks Foundry VTT System",
   "type": "module",
   "scripts": {
-    "build:packs": "node scripts/generate-pack-sources.mjs && fvtt package pack -n skills --in src/packs/skills --out packs/skills && fvtt package pack -n assets --in src/packs/assets --out packs/assets",
-    "unpack": "fvtt package unpack -n skills --in packs/skills/skills --out src/packs/skills && fvtt package unpack -n assets --in packs/assets/assets --out src/packs/assets"
+    "build:packs": "node scripts/build-packs.mjs",
+    "generate:sources": "node scripts/generate-pack-sources.mjs && npm run build:packs"
   },
   "devDependencies": {
     "@foundryvtt/foundryvtt-cli": "^3.0.3"
