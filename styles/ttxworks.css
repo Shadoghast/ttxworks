@@ -1,0 +1,837 @@
+/* ============================================================
+   TTXWorks — Foundry VTT System Styles
+   ============================================================ */
+
+/* ── Variables ─────────────────────────────────────────────── */
+:root {
+  --ttx-bg:          #1a1d23;
+  --ttx-bg-mid:      #22262f;
+  --ttx-bg-light:    #2c3140;
+  --ttx-border:      #3a4055;
+  --ttx-text:        #d8dce8;
+  --ttx-text-dim:    #7a8299;
+  --ttx-accent:      #4a90d9;
+  --ttx-accent-dark: #2d6bb5;
+  --ttx-gold:        #c9a227;
+  --ttx-green:       #3dba6a;
+  --ttx-yellow:      #e8c444;
+  --ttx-red:         #d94a4a;
+  --ttx-danger:      #c0392b;
+  --ttx-stress:      #e05c5c;
+  --ttx-pip-size:    18px;
+  --ttx-radius:      4px;
+}
+
+/* ── Base Sheet ─────────────────────────────────────────────── */
+.ttxworks.sheet {
+  font-family: "Signika", sans-serif;
+  font-size: 13px;
+  color: var(--ttx-text);
+  background: var(--ttx-bg);
+}
+
+.ttxworks.sheet .window-content {
+  background: var(--ttx-bg);
+  padding: 0;
+}
+
+/* ── Sheet Header ───────────────────────────────────────────── */
+.ttxworks .sheet-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px;
+  background: var(--ttx-bg-mid);
+  border-bottom: 2px solid var(--ttx-border);
+}
+
+.ttxworks .profile-img,
+.ttxworks .item-img {
+  width: 72px;
+  height: 72px;
+  object-fit: cover;
+  border-radius: var(--ttx-radius);
+  border: 2px solid var(--ttx-border);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.ttxworks .header-fields {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.ttxworks .charname input[type="text"],
+.ttxworks h1 input[type="text"] {
+  font-size: 1.4em;
+  font-weight: bold;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid var(--ttx-border);
+  color: var(--ttx-text);
+  width: 100%;
+  padding: 2px 0;
+}
+
+.ttxworks .header-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.9em;
+}
+
+.ttxworks .header-row label {
+  color: var(--ttx-text-dim);
+  min-width: 36px;
+}
+
+/* ── Focus & Stress ─────────────────────────────────────────── */
+.ttxworks .focus-stress-row {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
+  margin-top: 4px;
+}
+
+.ttxworks .focus-block,
+.ttxworks .stress-block {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.ttxworks .stat-label {
+  font-size: 0.7em;
+  font-weight: bold;
+  letter-spacing: 0.1em;
+  color: var(--ttx-text-dim);
+  text-transform: uppercase;
+}
+
+.ttxworks .pips-row {
+  display: flex;
+  gap: 3px;
+}
+
+.ttxworks .pip {
+  width: var(--ttx-pip-size);
+  height: var(--ttx-pip-size);
+  border-radius: 50%;
+  border: 2px solid var(--ttx-border);
+  background: var(--ttx-bg);
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.ttxworks .pip.filled {
+  background: var(--ttx-accent);
+  border-color: var(--ttx-accent-dark);
+}
+
+.ttxworks .pip.stress-filled {
+  background: var(--ttx-stress);
+  border-color: var(--ttx-danger);
+}
+
+.ttxworks .pip:hover {
+  border-color: var(--ttx-gold);
+}
+
+.ttxworks .stat-value {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.85em;
+}
+
+.ttxworks .stat-value input[type="number"] {
+  width: 40px;
+  text-align: center;
+  background: var(--ttx-bg-light);
+  border: 1px solid var(--ttx-border);
+  border-radius: var(--ttx-radius);
+  color: var(--ttx-text);
+  padding: 2px;
+}
+
+.ttxworks .stress-penalty {
+  color: var(--ttx-stress);
+  font-weight: bold;
+  font-size: 0.85em;
+}
+
+.ttxworks.burned-out .stress-block {
+  animation: burnedOut 2s ease-in-out infinite;
+}
+
+@keyframes burnedOut {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.6; }
+}
+
+.ttxworks .burned-out-stress .stat-label {
+  color: var(--ttx-stress);
+}
+
+.ttxworks .focus-empty .stat-label {
+  color: var(--ttx-text-dim);
+  opacity: 0.5;
+}
+
+/* ── Tabs ───────────────────────────────────────────────────── */
+.ttxworks .sheet-tabs {
+  display: flex;
+  background: var(--ttx-bg-mid);
+  border-bottom: 1px solid var(--ttx-border);
+  padding: 0 8px;
+  margin: 0;
+}
+
+.ttxworks .sheet-tabs .item {
+  padding: 8px 12px;
+  font-size: 0.85em;
+  color: var(--ttx-text-dim);
+  border-bottom: 2px solid transparent;
+  cursor: pointer;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+
+.ttxworks .sheet-tabs .item:hover {
+  color: var(--ttx-text);
+}
+
+.ttxworks .sheet-tabs .item.active {
+  color: var(--ttx-accent);
+  border-bottom-color: var(--ttx-accent);
+}
+
+/* ── Sheet Body ─────────────────────────────────────────────── */
+.ttxworks .sheet-body {
+  padding: 12px;
+  overflow-y: auto;
+}
+
+.ttxworks .tab {
+  display: none;
+}
+
+.ttxworks .tab.active {
+  display: block;
+}
+
+/* ── Buttons ────────────────────────────────────────────────── */
+.ttxworks-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px;
+  border-radius: var(--ttx-radius);
+  border: 1px solid var(--ttx-border);
+  background: var(--ttx-bg-light);
+  color: var(--ttx-text);
+  font-size: 0.85em;
+  cursor: pointer;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+
+.ttxworks-btn:hover {
+  border-color: var(--ttx-accent);
+  color: var(--ttx-accent);
+}
+
+.ttxworks-btn.primary {
+  background: var(--ttx-accent-dark);
+  border-color: var(--ttx-accent);
+  color: #fff;
+}
+
+.ttxworks-btn.primary:hover {
+  background: var(--ttx-accent);
+}
+
+.ttxworks-btn.danger {
+  border-color: var(--ttx-danger);
+  color: var(--ttx-danger);
+}
+
+.ttxworks-btn.danger:hover {
+  background: var(--ttx-danger);
+  color: #fff;
+}
+
+.ttxworks-btn.small {
+  padding: 2px 6px;
+  font-size: 0.78em;
+}
+
+.ttxworks .header-actions {
+  margin-top: 4px;
+}
+
+/* ── Section Headers ────────────────────────────────────────── */
+.ttxworks .section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--ttx-border);
+  padding-bottom: 4px;
+  margin-bottom: 8px;
+  font-size: 0.85em;
+  font-weight: bold;
+  color: var(--ttx-text-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* ── Item Lists ─────────────────────────────────────────────── */
+.ttxworks .item-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.ttxworks .item-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 8px;
+  background: var(--ttx-bg-mid);
+  border: 1px solid var(--ttx-border);
+  border-radius: var(--ttx-radius);
+  transition: border-color 0.15s;
+}
+
+.ttxworks .item-row:hover {
+  border-color: var(--ttx-accent);
+}
+
+.ttxworks .item-name {
+  flex: 1;
+  font-weight: 500;
+}
+
+.ttxworks .item-tag {
+  font-size: 0.75em;
+  color: var(--ttx-text-dim);
+  background: var(--ttx-bg-light);
+  border-radius: 2px;
+  padding: 1px 5px;
+  white-space: nowrap;
+}
+
+.ttxworks .item-bonus {
+  font-size: 0.85em;
+  color: var(--ttx-green);
+  font-weight: bold;
+  min-width: 40px;
+  text-align: right;
+}
+
+.ttxworks .item-controls {
+  display: flex;
+  gap: 4px;
+}
+
+.ttxworks .item-controls button {
+  background: none;
+  border: none;
+  color: var(--ttx-text-dim);
+  cursor: pointer;
+  padding: 2px 4px;
+  font-size: 0.85em;
+}
+
+.ttxworks .item-controls button:hover {
+  color: var(--ttx-accent);
+}
+
+.ttxworks .item-controls .item-delete:hover {
+  color: var(--ttx-danger);
+}
+
+/* ── Asset Status Badges ────────────────────────────────────── */
+.ttxworks .asset-status-badge {
+  font-size: 0.72em;
+  padding: 1px 6px;
+  border-radius: 10px;
+  font-weight: bold;
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  white-space: nowrap;
+}
+
+.ttxworks .asset-status-ready        { background: #1a4d2e; color: var(--ttx-green); border: 1px solid var(--ttx-green); }
+.ttxworks .asset-status-compromised  { background: #4d1a1a; color: var(--ttx-red);   border: 1px solid var(--ttx-red); }
+.ttxworks .asset-status-reduced      { background: #4d3a1a; color: var(--ttx-yellow); border: 1px solid var(--ttx-yellow); }
+.ttxworks .asset-status-unavailable  { background: #2c2c2c; color: #777; border: 1px solid #555; }
+.ttxworks .asset-status-unknown      { background: #2c2240; color: #a98ed4; border: 1px solid #7a5ab5; }
+
+/* ── Clock Widgets ──────────────────────────────────────────── */
+.ttxworks .clocks-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.ttxworks .clock-card {
+  background: var(--ttx-bg-mid);
+  border: 1px solid var(--ttx-border);
+  border-radius: 6px;
+  padding: 10px;
+  min-width: 140px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+.ttxworks .clock-card:hover {
+  border-color: var(--ttx-accent);
+}
+
+.ttxworks .clock-name {
+  font-size: 0.82em;
+  font-weight: bold;
+  text-align: center;
+  color: var(--ttx-text);
+}
+
+.ttxworks .clock-consequence {
+  font-size: 0.72em;
+  color: var(--ttx-yellow);
+  text-align: center;
+  max-width: 130px;
+}
+
+.ttxworks .clock-info {
+  font-size: 0.78em;
+  color: var(--ttx-text-dim);
+}
+
+.ttxworks .clock-controls {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+/* Clock SVG-style using CSS Grid */
+.ttxworks .clock-widget {
+  position: relative;
+  width: 80px;
+  height: 80px;
+}
+
+.ttxworks .clock-widget .clock-segment {
+  position: absolute;
+  background: var(--ttx-bg-light);
+  border: 2px solid var(--ttx-border);
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.ttxworks .clock-widget .clock-segment.filled {
+  background: var(--ttx-accent);
+  border-color: var(--ttx-accent-dark);
+}
+
+/* 4-segment clock (quadrants) */
+.ttxworks .clock-4 .clock-segment { width: 38px; height: 38px; border-radius: 2px; }
+.ttxworks .clock-4 .clock-segment:nth-child(1) { top: 1px; left: 1px; border-top-left-radius: 50%; }
+.ttxworks .clock-4 .clock-segment:nth-child(2) { top: 1px; right: 1px; border-top-right-radius: 50%; }
+.ttxworks .clock-4 .clock-segment:nth-child(3) { bottom: 1px; left: 1px; border-bottom-left-radius: 50%; }
+.ttxworks .clock-4 .clock-segment:nth-child(4) { bottom: 1px; right: 1px; border-bottom-right-radius: 50%; }
+
+/* 6-segment clock */
+.ttxworks .clock-6 .clock-segment { width: 24px; height: 38px; border-radius: 2px; }
+.ttxworks .clock-6 .clock-segment:nth-child(1) { top: 1px; left: 1px; }
+.ttxworks .clock-6 .clock-segment:nth-child(2) { top: 1px; left: 29px; }
+.ttxworks .clock-6 .clock-segment:nth-child(3) { top: 1px; right: 1px; }
+.ttxworks .clock-6 .clock-segment:nth-child(4) { bottom: 1px; left: 1px; }
+.ttxworks .clock-6 .clock-segment:nth-child(5) { bottom: 1px; left: 29px; }
+.ttxworks .clock-6 .clock-segment:nth-child(6) { bottom: 1px; right: 1px; }
+
+/* 8-segment clock (2x4 grid) */
+.ttxworks .clock-8 .clock-segment { width: 18px; height: 38px; border-radius: 2px; }
+.ttxworks .clock-8 .clock-segment:nth-child(1) { top: 1px; left: 1px; }
+.ttxworks .clock-8 .clock-segment:nth-child(2) { top: 1px; left: 21px; }
+.ttxworks .clock-8 .clock-segment:nth-child(3) { top: 1px; left: 41px; }
+.ttxworks .clock-8 .clock-segment:nth-child(4) { top: 1px; right: 1px; }
+.ttxworks .clock-8 .clock-segment:nth-child(5) { bottom: 1px; left: 1px; }
+.ttxworks .clock-8 .clock-segment:nth-child(6) { bottom: 1px; left: 21px; }
+.ttxworks .clock-8 .clock-segment:nth-child(7) { bottom: 1px; left: 41px; }
+.ttxworks .clock-8 .clock-segment:nth-child(8) { bottom: 1px; right: 1px; }
+
+.ttxworks .clock-segment:hover {
+  border-color: var(--ttx-gold) !important;
+}
+
+/* Adversary clocks are red */
+.ttxworks .adversary-clock .clock-segment.filled {
+  background: var(--ttx-red);
+  border-color: var(--ttx-danger);
+}
+
+/* Large clock on clock sheet */
+.ttxworks .clock-display-large {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 16px;
+}
+
+.ttxworks .clock-display-large .clock-widget {
+  width: 140px;
+  height: 140px;
+}
+
+.ttxworks .clock-display-large .clock-4 .clock-segment  { width: 68px; height: 68px; }
+.ttxworks .clock-display-large .clock-6 .clock-segment  { width: 44px; height: 68px; }
+.ttxworks .clock-display-large .clock-6 .clock-segment:nth-child(2) { left: 49px; }
+.ttxworks .clock-display-large .clock-6 .clock-segment:nth-child(5) { left: 49px; }
+.ttxworks .clock-display-large .clock-8 .clock-segment  { width: 33px; height: 68px; }
+.ttxworks .clock-display-large .clock-8 .clock-segment:nth-child(2) { left: 36px; }
+.ttxworks .clock-display-large .clock-8 .clock-segment:nth-child(3) { left: 72px; }
+.ttxworks .clock-display-large .clock-8 .clock-segment:nth-child(6) { left: 36px; }
+.ttxworks .clock-display-large .clock-8 .clock-segment:nth-child(7) { left: 72px; }
+
+.ttxworks .clock-counter {
+  font-size: 1.3em;
+  font-weight: bold;
+  color: var(--ttx-text);
+}
+
+.ttxworks .clock-sheet-controls {
+  display: flex;
+  gap: 6px;
+}
+
+/* ── Node Status ────────────────────────────────────────────── */
+.ttxworks .node-status-display {
+  padding: 6px 12px;
+  border-radius: var(--ttx-radius);
+  font-weight: bold;
+  font-size: 1em;
+  display: inline-block;
+}
+
+.ttxworks .status-operational { background: #1a4d2e; color: var(--ttx-green); border: 1px solid var(--ttx-green); }
+.ttxworks .status-degraded    { background: #4d3a1a; color: var(--ttx-yellow); border: 1px solid var(--ttx-yellow); }
+.ttxworks .status-compromised { background: #4d1a1a; color: var(--ttx-red); border: 1px solid var(--ttx-red); }
+.ttxworks .status-offline     { background: #1c1c1c; color: #777; border: 1px solid #444; }
+
+.ttxworks .node-status-buttons {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.ttxworks .node-status-btn {
+  padding: 4px 10px;
+  border-radius: var(--ttx-radius);
+  border: 1px solid var(--ttx-border);
+  background: var(--ttx-bg-light);
+  color: var(--ttx-text-dim);
+  cursor: pointer;
+  font-size: 0.82em;
+  transition: all 0.15s;
+}
+
+.ttxworks .node-status-btn.active,
+.ttxworks .node-status-btn:hover {
+  font-weight: bold;
+}
+
+.ttxworks .node-status-btn.status-operational.active { color: var(--ttx-green); border-color: var(--ttx-green); }
+.ttxworks .node-status-btn.status-degraded.active    { color: var(--ttx-yellow); border-color: var(--ttx-yellow); }
+.ttxworks .node-status-btn.status-compromised.active { color: var(--ttx-red); border-color: var(--ttx-red); }
+.ttxworks .node-status-btn.status-offline.active     { color: #777; border-color: #555; }
+
+.ttxworks .health-states {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.ttxworks .health-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.ttxworks .health-row label {
+  min-width: 110px;
+  font-weight: bold;
+  font-size: 0.85em;
+}
+
+.ttxworks .health-row input[type="text"] {
+  flex: 1;
+}
+
+.ttxworks .health-row.current-status {
+  background: var(--ttx-bg-mid);
+  border-radius: var(--ttx-radius);
+  padding: 4px 6px;
+}
+
+.ttxworks .status-label-green  { color: var(--ttx-green); }
+.ttxworks .status-label-yellow { color: var(--ttx-yellow); }
+.ttxworks .status-label-red    { color: var(--ttx-red); }
+.ttxworks .status-label-black  { color: #777; }
+
+/* ── Forms ──────────────────────────────────────────────────── */
+.ttxworks input[type="text"],
+.ttxworks input[type="number"],
+.ttxworks select,
+.ttxworks textarea {
+  background: var(--ttx-bg-light);
+  border: 1px solid var(--ttx-border);
+  border-radius: var(--ttx-radius);
+  color: var(--ttx-text);
+  padding: 4px 6px;
+  font-family: inherit;
+  font-size: inherit;
+  transition: border-color 0.15s;
+}
+
+.ttxworks input[type="text"]:focus,
+.ttxworks input[type="number"]:focus,
+.ttxworks select:focus,
+.ttxworks textarea:focus {
+  outline: none;
+  border-color: var(--ttx-accent);
+}
+
+.ttxworks .form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  margin-bottom: 10px;
+}
+
+.ttxworks .form-group label {
+  font-size: 0.8em;
+  font-weight: bold;
+  color: var(--ttx-text-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.ttxworks .form-group.full-width {
+  width: 100%;
+}
+
+.ttxworks .form-row {
+  display: flex;
+  gap: 12px;
+}
+
+.ttxworks .form-row .form-group {
+  flex: 1;
+}
+
+/* ── Two-column layout ──────────────────────────────────────── */
+.ttxworks .two-col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+/* ── List rows (objectives/restrictions) ────────────────────── */
+.ttxworks .list-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 4px;
+}
+
+.ttxworks .list-row input[type="text"] {
+  flex: 1;
+}
+
+/* ── Effects ────────────────────────────────────────────────── */
+.ttxworks .effect-modifier.pos { color: var(--ttx-green); }
+.ttxworks .effect-modifier.neg { color: var(--ttx-red); }
+
+/* ── Hint text ──────────────────────────────────────────────── */
+.ttxworks .hint {
+  font-size: 0.78em;
+  color: var(--ttx-text-dim);
+  font-style: italic;
+}
+
+/* ── Adversary Header ───────────────────────────────────────── */
+.ttxworks .adversary-header {
+  background: linear-gradient(135deg, #1a0a0a, #2c1010);
+  border-bottom-color: var(--ttx-danger);
+}
+
+.ttxworks .adversary-header h1 input {
+  color: #e09090;
+}
+
+.ttxworks .gm-only-notice {
+  font-size: 0.8em;
+  color: var(--ttx-yellow);
+  font-style: italic;
+}
+
+.ttxworks .gm-section {
+  background: rgba(201, 162, 39, 0.05);
+  border: 1px solid rgba(201, 162, 39, 0.2);
+  border-radius: var(--ttx-radius);
+  padding: 10px;
+}
+
+/* ── Item Sheet ─────────────────────────────────────────────── */
+.ttxworks .item-header {
+  min-height: 60px;
+}
+
+.ttxworks .item-body {
+  padding: 12px;
+}
+
+/* ── Chat Roll Message ──────────────────────────────────────── */
+.ttxworks.chat-roll {
+  border-left: 3px solid var(--ttx-border);
+  padding: 8px 10px;
+  background: var(--ttx-bg-mid);
+  border-radius: var(--ttx-radius);
+  font-size: 0.9em;
+}
+
+.ttxworks.chat-roll .roll-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 6px;
+  font-weight: bold;
+}
+
+.ttxworks.chat-roll .roll-actor { color: var(--ttx-gold); }
+.ttxworks.chat-roll .roll-action { color: var(--ttx-text-dim); font-style: italic; }
+
+.ttxworks.chat-roll .roll-tn-breakdown {
+  font-size: 0.82em;
+  color: var(--ttx-text-dim);
+  margin-bottom: 8px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.ttxworks.chat-roll .roll-tn-breakdown .pos  { color: var(--ttx-green); }
+.ttxworks.chat-roll .roll-tn-breakdown .neg  { color: var(--ttx-red); }
+.ttxworks.chat-roll .roll-tn-breakdown .final { color: var(--ttx-text); font-weight: bold; }
+
+.ttxworks.chat-roll .roll-result-block {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 6px;
+  border-radius: var(--ttx-radius);
+  background: var(--ttx-bg);
+}
+
+.ttxworks.chat-roll .roll-die {
+  font-size: 2em;
+  font-weight: bold;
+  min-width: 48px;
+  text-align: center;
+}
+
+.ttxworks.chat-roll .roll-outcome-icon { font-size: 1.5em; }
+.ttxworks.chat-roll .roll-outcome-label { font-size: 1.1em; font-weight: bold; }
+
+/* Outcome colours */
+.ttxworks.chat-roll.critical-success { border-left-color: var(--ttx-gold); }
+.ttxworks.chat-roll.critical-success .roll-outcome-label { color: var(--ttx-gold); }
+.ttxworks.chat-roll.critical-success .roll-die           { color: var(--ttx-gold); }
+
+.ttxworks.chat-roll.success { border-left-color: var(--ttx-green); }
+.ttxworks.chat-roll.success .roll-outcome-label { color: var(--ttx-green); }
+.ttxworks.chat-roll.success .roll-die           { color: var(--ttx-green); }
+
+.ttxworks.chat-roll.complication { border-left-color: var(--ttx-yellow); }
+.ttxworks.chat-roll.complication .roll-outcome-label { color: var(--ttx-yellow); }
+.ttxworks.chat-roll.complication .roll-die           { color: var(--ttx-yellow); }
+
+.ttxworks.chat-roll.failure { border-left-color: var(--ttx-red); }
+.ttxworks.chat-roll.failure .roll-outcome-label { color: var(--ttx-red); }
+.ttxworks.chat-roll.failure .roll-die           { color: var(--ttx-red); }
+
+.ttxworks.chat-roll.critical-failure { border-left-color: var(--ttx-danger); }
+.ttxworks.chat-roll.critical-failure .roll-outcome-label { color: var(--ttx-danger); }
+.ttxworks.chat-roll.critical-failure .roll-die           { color: var(--ttx-danger); }
+
+.ttxworks.chat-roll .roll-note {
+  font-size: 0.8em;
+  color: var(--ttx-text-dim);
+  margin-top: 4px;
+}
+
+.ttxworks.chat-roll .stress-note {
+  color: var(--ttx-stress);
+}
+
+/* ── Roll Dialog ────────────────────────────────────────────── */
+.ttxworks-roll-dialog .form-group {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.ttxworks-roll-dialog .form-group label {
+  min-width: 130px;
+  font-size: 0.88em;
+  color: #ccc;
+}
+
+.ttxworks-roll-dialog select,
+.ttxworks-roll-dialog input {
+  flex: 1;
+}
+
+.ttxworks-roll-dialog hr {
+  border-color: #333;
+  margin: 8px 0;
+}
+
+.ttxworks-roll-dialog .hint {
+  font-size: 0.78em;
+  color: #888;
+  font-style: italic;
+  margin: 2px 0 6px;
+}
+
+#final-tn {
+  color: var(--ttx-gold);
+}
+
+/* ── Editor Wrapper ─────────────────────────────────────────── */
+.ttxworks .editor-wrapper {
+  min-height: 200px;
+}
+
+.ttxworks .editor-wrapper .editor {
+  min-height: 200px;
+}
+
+/* ── Responsive ─────────────────────────────────────────────── */
+@media (max-width: 560px) {
+  .ttxworks .two-col { grid-template-columns: 1fr; }
+  .ttxworks .focus-stress-row { flex-direction: column; align-items: flex-start; }
+}

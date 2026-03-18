@@ -1,0 +1,195 @@
+<form class="ttxworks sheet actor team {{#if isBurnedOut}}burned-out{{/if}}" autocomplete="off">
+
+  <header class="sheet-header">
+    <img class="profile-img" src="{{actor.img}}" title="{{actor.name}}" data-edit="img"/>
+    <div class="header-fields">
+      <h1 class="charname">
+        <input name="name" type="text" value="{{actor.name}}" placeholder="Team Name"/>
+      </h1>
+      <div class="header-row">
+        <label>Designation</label>
+        <input type="text" name="system.designation" value="{{system.designation}}" placeholder="e.g. SOC, IR Team, IT Department"/>
+      </div>
+
+      <div class="focus-stress-row">
+        <div class="focus-block {{#if isFocusEmpty}}focus-empty{{/if}}">
+          <span class="stat-label">FOCUS (Team)</span>
+          <div class="pips-row">
+            {{#times system.focus.max}}
+              <span class="focus-pip pip {{#if (lt this ../system.focus.value)}}filled{{/if}}"
+                    data-index="{{this}}"></span>
+            {{/times}}
+          </div>
+          <div class="stat-value">
+            <input type="number" name="system.focus.value" value="{{system.focus.value}}" min="0" max="{{system.focus.max}}"/>
+            / <input type="number" name="system.focus.max" value="{{system.focus.max}}" min="1" max="30"/>
+          </div>
+        </div>
+
+        <div class="stress-block {{#if isBurnedOut}}burned-out-stress{{/if}}">
+          <span class="stat-label">STRESS {{#if isBurnedOut}}<em>(BURNED OUT)</em>{{/if}}</span>
+          <div class="pips-row">
+            {{#times 6}}
+              <span class="stress-pip pip {{#if (lt this ../system.stress.value)}}stress-filled{{/if}}"
+                    data-index="{{this}}"></span>
+            {{/times}}
+          </div>
+          <div class="stat-value">
+            <input type="number" name="system.stress.value" value="{{system.stress.value}}" min="0" max="10"/>
+            {{#if stressPenalty}}<span class="stress-penalty">−{{stressPenalty}}% to rolls</span>{{/if}}
+          </div>
+        </div>
+
+        <div class="header-actions">
+          <button type="button" class="btn-roll-action ttxworks-btn primary">
+            <i class="fas fa-dice-d20"></i> Action Roll
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <nav class="sheet-tabs tabs" data-group="primary">
+    <a class="item" data-tab="main">Overview</a>
+    <a class="item" data-tab="skills">Skills ({{skills.length}})</a>
+    <a class="item" data-tab="assets">Assets ({{assets.length}})</a>
+    <a class="item" data-tab="clocks">Clocks ({{clocks.length}})</a>
+    <a class="item" data-tab="effects">Effects ({{effects.length}})</a>
+    <a class="item" data-tab="bio">Notes</a>
+  </nav>
+
+  <section class="sheet-body">
+
+    <div class="tab" data-tab="main">
+      <div class="two-col">
+        <div class="col">
+          <div class="section-header">
+            <span>Objectives</span>
+            <button type="button" class="add-objective ttxworks-btn small"><i class="fas fa-plus"></i></button>
+          </div>
+          {{#each system.objectives as |obj idx|}}
+          <div class="list-row">
+            <input type="text" name="system.objectives.{{idx}}" value="{{obj}}"/>
+            <button type="button" class="delete-objective ttxworks-btn small danger" data-index="{{idx}}">
+              <i class="fas fa-trash"></i>
+            </button>
+          </div>
+          {{else}}<p class="hint">No objectives.</p>{{/each}}
+        </div>
+        <div class="col">
+          <div class="section-header">
+            <span>Restrictions</span>
+            <button type="button" class="add-restriction ttxworks-btn small"><i class="fas fa-plus"></i></button>
+          </div>
+          {{#each system.restrictions as |res idx|}}
+          <div class="list-row">
+            <input type="text" name="system.restrictions.{{idx}}" value="{{res}}"/>
+            <button type="button" class="delete-restriction ttxworks-btn small danger" data-index="{{idx}}">
+              <i class="fas fa-trash"></i>
+            </button>
+          </div>
+          {{else}}<p class="hint">No restrictions.</p>{{/each}}
+        </div>
+      </div>
+    </div>
+
+    <div class="tab" data-tab="skills">
+      <div class="section-header">
+        <span>Skills</span>
+        <button type="button" class="item-create ttxworks-btn small" data-type="skill"><i class="fas fa-plus"></i></button>
+      </div>
+      <ul class="item-list skills-list">
+        {{#each skills as |skill|}}
+        <li class="item-row" data-item-id="{{skill.id}}">
+          <span class="item-name">{{skill.name}}</span>
+          <span class="item-tag">{{skill.system.category}}</span>
+          <span class="item-bonus">+{{skill.system.bonus}}%</span>
+          <div class="item-controls">
+            <button type="button" class="item-edit"><i class="fas fa-edit"></i></button>
+            <button type="button" class="item-delete"><i class="fas fa-trash"></i></button>
+          </div>
+        </li>
+        {{else}}<li class="hint">No skills.</li>{{/each}}
+      </ul>
+    </div>
+
+    <div class="tab" data-tab="assets">
+      <div class="section-header">
+        <span>Assets</span>
+        <button type="button" class="item-create ttxworks-btn small" data-type="asset"><i class="fas fa-plus"></i></button>
+      </div>
+      <ul class="item-list assets-list">
+        {{#each assets as |asset|}}
+        <li class="item-row" data-item-id="{{asset.id}}">
+          <span class="item-name">{{asset.name}}</span>
+          <span class="item-tag">{{asset.system.category}}</span>
+          <span class="asset-status-badge {{assetStatusClass asset.system.status}}">{{asset.system.status}}</span>
+          {{#if asset.system.bonus}}<span class="item-bonus">+{{asset.system.bonus}}%</span>{{/if}}
+          <div class="item-controls">
+            <button type="button" class="item-edit"><i class="fas fa-edit"></i></button>
+            <button type="button" class="item-delete"><i class="fas fa-trash"></i></button>
+          </div>
+        </li>
+        {{else}}<li class="hint">No assets.</li>{{/each}}
+      </ul>
+    </div>
+
+    <div class="tab" data-tab="clocks">
+      <div class="section-header">
+        <span>Clocks</span>
+        <button type="button" class="item-create ttxworks-btn small" data-type="clock"><i class="fas fa-plus"></i></button>
+      </div>
+      <div class="clocks-grid">
+        {{#each clocks as |clock|}}
+        <div class="clock-card" data-item-id="{{clock.id}}">
+          <div class="clock-name">{{clock.name}}</div>
+          <div class="clock-widget clock-{{clock.system.segments}}">
+            {{#each (clockSegmentArray clock.system.segments clock.system.filled) as |seg|}}
+              <div class="clock-segment {{#if seg.filled}}filled{{/if}}" data-index="{{seg.index}}"></div>
+            {{/each}}
+          </div>
+          <div class="clock-info">{{clock.system.filled}} / {{clock.system.segments}}</div>
+          {{#if clock.system.consequence}}<div class="clock-consequence">⚡ {{clock.system.consequence}}</div>{{/if}}
+          <div class="clock-controls">
+            <button type="button" class="clock-retreat ttxworks-btn small">−</button>
+            <button type="button" class="clock-advance ttxworks-btn small primary">+</button>
+            <button type="button" class="item-edit"><i class="fas fa-edit"></i></button>
+            <button type="button" class="item-delete"><i class="fas fa-trash"></i></button>
+          </div>
+        </div>
+        {{else}}<p class="hint">No clocks.</p>{{/each}}
+      </div>
+    </div>
+
+    <div class="tab" data-tab="effects">
+      <div class="section-header">
+        <span>Active Effects</span>
+        <button type="button" class="item-create ttxworks-btn small" data-type="effect"><i class="fas fa-plus"></i></button>
+      </div>
+      <ul class="item-list effects-list">
+        {{#each effects as |eff|}}
+        <li class="item-row" data-item-id="{{eff.id}}">
+          <span class="item-name">{{eff.name}}</span>
+          {{#if eff.system.modifier}}
+            <span class="effect-modifier {{#if (gt eff.system.modifier 0)}}pos{{else}}neg{{/if}}">
+              {{#if (gt eff.system.modifier 0)}}+{{/if}}{{eff.system.modifier}}%
+            </span>
+          {{/if}}
+          <span class="item-tag">{{eff.system.duration}}</span>
+          <div class="item-controls">
+            <button type="button" class="item-edit"><i class="fas fa-edit"></i></button>
+            <button type="button" class="item-delete"><i class="fas fa-trash"></i></button>
+          </div>
+        </li>
+        {{else}}<li class="hint">No active effects.</li>{{/each}}
+      </ul>
+    </div>
+
+    <div class="tab" data-tab="bio">
+      <div class="editor-wrapper">
+        {{editor system.biography target="system.biography" button=true owner=owner editable=editable}}
+      </div>
+    </div>
+
+  </section>
+</form>

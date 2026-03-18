@@ -1,0 +1,48 @@
+<form class="ttxworks sheet item clock" autocomplete="off">
+  <header class="sheet-header item-header">
+    <div class="header-fields" style="width:100%">
+      <h1><input name="name" type="text" value="{{item.name}}" placeholder="Clock Name"/></h1>
+    </div>
+  </header>
+
+  <section class="sheet-body item-body">
+    <div class="clock-display-large">
+      <div class="clock-widget clock-{{system.segments}}">
+        {{#each segmentArray as |seg|}}
+          <div class="clock-segment {{#if seg.filled}}filled{{/if}}" data-index="{{seg.index}}"></div>
+        {{/each}}
+      </div>
+      <div class="clock-counter">{{system.filled}} / {{system.segments}}</div>
+      <div class="clock-sheet-controls">
+        <button type="button" class="clock-reset ttxworks-btn small">Reset</button>
+        <button type="button" class="clock-fill-all ttxworks-btn small danger">Fill All</button>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label>Total Segments</label>
+        <select name="system.segments">
+          {{#each segmentChoices as |n|}}
+          <option value="{{n}}" {{#if (eq n ../system.segments)}}selected{{/if}}>{{n}}</option>
+          {{/each}}
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Filled</label>
+        <input type="number" name="system.filled" value="{{system.filled}}" min="0" max="{{system.segments}}"/>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label>Owner (Actor ID, optional)</label>
+      <input type="text" name="system.owner" value="{{system.owner}}" placeholder="Leave blank for global clock"/>
+    </div>
+
+    <div class="form-group">
+      <label>Consequence When Full</label>
+      <input type="text" name="system.consequence" value="{{system.consequence}}"
+             placeholder="What happens when this clock fills?"/>
+    </div>
+  </section>
+</form>

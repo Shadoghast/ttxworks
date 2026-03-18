@@ -1,0 +1,57 @@
+<form class="ttxworks sheet item asset" autocomplete="off">
+  <header class="sheet-header item-header">
+    <img class="item-img" src="{{item.img}}" title="{{item.name}}" data-edit="img"/>
+    <div class="header-fields">
+      <h1><input name="name" type="text" value="{{item.name}}" placeholder="Asset Name"/></h1>
+      <div class="header-row">
+        <label>Category</label>
+        <select name="system.category">
+          {{#each assetCategories as |cat|}}
+          <option value="{{cat}}" {{#if (eq cat ../system.category)}}selected{{/if}}>{{capitalize cat}}</option>
+          {{/each}}
+        </select>
+        <label>Status</label>
+        <select name="system.status" class="asset-status-select {{assetStatusClass system.status}}">
+          {{#each assetStatuses as |s|}}
+          <option value="{{s}}" {{#if (eq s ../system.status)}}selected{{/if}}>{{capitalize s}}</option>
+          {{/each}}
+        </select>
+      </div>
+    </div>
+  </header>
+
+  <section class="sheet-body item-body">
+    <div class="form-group">
+      <label>Source Domain</label>
+      <input type="text" name="system.sourceDomain" value="{{system.sourceDomain}}"
+             placeholder="e.g. Endpoint Protection Platform, SIEM, IR Services"/>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>TN Bonus (%)</label>
+        <input type="number" name="system.bonus" value="{{system.bonus}}" min="0" max="30"/>
+      </div>
+      <div class="form-group">
+        <label>Focus Cost to Activate</label>
+        <input type="number" name="system.focusCostToActivate"
+               value="{{system.focusCostToActivate}}" placeholder="null = passive" min="0"/>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Uses Per Scenario</label>
+        <input type="number" name="system.usesPerScenario"
+               value="{{system.usesPerScenario}}" placeholder="blank = passive" min="0"/>
+      </div>
+      <div class="form-group">
+        <label>Uses Remaining</label>
+        <input type="number" name="system.usesRemaining"
+               value="{{system.usesRemaining}}" placeholder="blank = passive" min="0"/>
+      </div>
+    </div>
+    <div class="form-group full-width">
+      <label>Description / Mechanical Benefit</label>
+      {{editor system.description target="system.description" button=true owner=owner editable=editable}}
+    </div>
+  </section>
+</form>

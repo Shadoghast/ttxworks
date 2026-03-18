@@ -1,0 +1,92 @@
+<form class="ttxworks sheet actor node" autocomplete="off">
+
+  <header class="sheet-header node-header">
+    <img class="profile-img" src="{{actor.img}}" title="{{actor.name}}" data-edit="img"/>
+    <div class="header-fields">
+      <h1 class="charname">
+        <input name="name" type="text" value="{{actor.name}}" placeholder="Node Name (e.g. ERP Server, VPN Gateway)"/>
+      </h1>
+      <div class="node-status-display {{nodeStatusClass system.status}}">
+        <span class="status-label">STATUS: <strong>{{capitalize system.status}}</strong></span>
+      </div>
+      <div class="node-status-buttons">
+        <button type="button" class="node-status-btn status-operational {{#if (eq system.status 'operational')}}active{{/if}}"
+                data-status="operational">Operational</button>
+        <button type="button" class="node-status-btn status-degraded {{#if (eq system.status 'degraded')}}active{{/if}}"
+                data-status="degraded">Degraded</button>
+        <button type="button" class="node-status-btn status-compromised {{#if (eq system.status 'compromised')}}active{{/if}}"
+                data-status="compromised">Compromised</button>
+        <button type="button" class="node-status-btn status-offline {{#if (eq system.status 'offline')}}active{{/if}}"
+                data-status="offline">Offline</button>
+      </div>
+    </div>
+  </header>
+
+  <nav class="sheet-tabs tabs" data-group="primary">
+    <a class="item" data-tab="status">Status & Health</a>
+    <a class="item" data-tab="description">Description</a>
+    <a class="item" data-tab="effects">Effects ({{effects.length}})</a>
+  </nav>
+
+  <section class="sheet-body">
+
+    <div class="tab" data-tab="status">
+      <div class="health-states">
+        <h3>Health State Definitions</h3>
+        <p class="hint">Define in plain business language what each status means for this node.</p>
+
+        <div class="health-row {{#if (eq system.status 'operational')}}current-status{{/if}}">
+          <label class="status-label-green">🟢 Operational</label>
+          <input type="text" name="system.healthStates.operational"
+                 value="{{system.healthStates.operational}}"
+                 placeholder="e.g. All services running normally, full availability"/>
+        </div>
+        <div class="health-row {{#if (eq system.status 'degraded')}}current-status{{/if}}">
+          <label class="status-label-yellow">🟡 Degraded</label>
+          <input type="text" name="system.healthStates.degraded"
+                 value="{{system.healthStates.degraded}}"
+                 placeholder="e.g. Performance reduced 50%, intermittent errors"/>
+        </div>
+        <div class="health-row {{#if (eq system.status 'compromised')}}current-status{{/if}}">
+          <label class="status-label-red">🔴 Compromised</label>
+          <input type="text" name="system.healthStates.compromised"
+                 value="{{system.healthStates.compromised}}"
+                 placeholder="e.g. Adversary has access, data integrity unknown"/>
+        </div>
+        <div class="health-row {{#if (eq system.status 'offline')}}current-status{{/if}}">
+          <label class="status-label-black">⚫ Offline</label>
+          <input type="text" name="system.healthStates.offline"
+                 value="{{system.healthStates.offline}}"
+                 placeholder="e.g. Service completely unavailable, manual failover required"/>
+        </div>
+      </div>
+    </div>
+
+    <div class="tab" data-tab="description">
+      <div class="editor-wrapper">
+        {{editor system.description target="system.description" button=true owner=owner editable=editable}}
+      </div>
+    </div>
+
+    <div class="tab" data-tab="effects">
+      <div class="section-header">
+        <span>Active Effects</span>
+        <button type="button" class="item-create ttxworks-btn small" data-type="effect"><i class="fas fa-plus"></i></button>
+      </div>
+      <ul class="item-list effects-list">
+        {{#each effects as |eff|}}
+        <li class="item-row" data-item-id="{{eff.id}}">
+          <span class="item-name">{{eff.name}}</span>
+          <span class="item-tag">{{eff.system.source}}</span>
+          <span class="item-tag">{{eff.system.duration}}</span>
+          <div class="item-controls">
+            <button type="button" class="item-edit"><i class="fas fa-edit"></i></button>
+            <button type="button" class="item-delete"><i class="fas fa-trash"></i></button>
+          </div>
+        </li>
+        {{else}}<li class="hint">No active effects.</li>{{/each}}
+      </ul>
+    </div>
+
+  </section>
+</form>

@@ -1,0 +1,95 @@
+<form class="ttxworks sheet actor adversary" autocomplete="off">
+
+  <header class="sheet-header adversary-header">
+    <img class="profile-img" src="{{actor.img}}" title="{{actor.name}}" data-edit="img"/>
+    <div class="header-fields">
+      <h1 class="charname">
+        <input name="name" type="text" value="{{actor.name}}" placeholder="Adversary / Threat Actor Name"/>
+      </h1>
+      <div class="header-row">
+        <label>Threat Profile</label>
+        <input type="text" name="system.threatProfile" value="{{system.threatProfile}}"
+               placeholder="e.g. Nation-State APT, Ransomware Gang, Insider Threat"/>
+      </div>
+      {{#unless isGM}}
+      <div class="gm-only-notice">⚠ Full adversary information visible to GM only.</div>
+      {{/unless}}
+    </div>
+  </header>
+
+  <nav class="sheet-tabs tabs" data-group="primary">
+    <a class="item" data-tab="objectives">Objectives (GM)</a>
+    <a class="item" data-tab="clocks">Clocks ({{clocks.length}})</a>
+    <a class="item" data-tab="effects">Effects ({{effects.length}})</a>
+    <a class="item" data-tab="notes">Notes</a>
+  </nav>
+
+  <section class="sheet-body">
+
+    <div class="tab" data-tab="objectives">
+      {{#if isGM}}
+      <div class="gm-section">
+        <p class="hint">Secret adversary objectives — GM eyes only.</p>
+        <div class="editor-wrapper">
+          {{editor system.objectives target="system.objectives" button=true owner=owner editable=editable}}
+        </div>
+      </div>
+      {{else}}
+      <p class="hint gm-only-notice">This section is visible to the GM only.</p>
+      {{/if}}
+    </div>
+
+    <div class="tab" data-tab="clocks">
+      <div class="section-header">
+        <span>Adversary Clocks</span>
+        <button type="button" class="item-create ttxworks-btn small" data-type="clock"><i class="fas fa-plus"></i></button>
+      </div>
+      <div class="clocks-grid">
+        {{#each clocks as |clock|}}
+        <div class="clock-card adversary-clock" data-item-id="{{clock.id}}">
+          <div class="clock-name">{{clock.name}}</div>
+          <div class="clock-widget clock-{{clock.system.segments}}">
+            {{#each (clockSegmentArray clock.system.segments clock.system.filled) as |seg|}}
+              <div class="clock-segment {{#if seg.filled}}filled{{/if}}" data-index="{{seg.index}}"></div>
+            {{/each}}
+          </div>
+          <div class="clock-info">{{clock.system.filled}} / {{clock.system.segments}}</div>
+          {{#if clock.system.consequence}}<div class="clock-consequence">⚡ {{clock.system.consequence}}</div>{{/if}}
+          <div class="clock-controls">
+            <button type="button" class="clock-retreat ttxworks-btn small">−</button>
+            <button type="button" class="clock-advance ttxworks-btn small danger">+</button>
+            <button type="button" class="item-edit"><i class="fas fa-edit"></i></button>
+            <button type="button" class="item-delete"><i class="fas fa-trash"></i></button>
+          </div>
+        </div>
+        {{else}}<p class="hint">No adversary clocks.</p>{{/each}}
+      </div>
+    </div>
+
+    <div class="tab" data-tab="effects">
+      <div class="section-header">
+        <span>Active Effects</span>
+        <button type="button" class="item-create ttxworks-btn small" data-type="effect"><i class="fas fa-plus"></i></button>
+      </div>
+      <ul class="item-list effects-list">
+        {{#each effects as |eff|}}
+        <li class="item-row" data-item-id="{{eff.id}}">
+          <span class="item-name">{{eff.name}}</span>
+          <span class="item-tag">{{eff.system.duration}}</span>
+          <div class="item-controls">
+            <button type="button" class="item-edit"><i class="fas fa-edit"></i></button>
+            <button type="button" class="item-delete"><i class="fas fa-trash"></i></button>
+          </div>
+        </li>
+        {{else}}<li class="hint">No active effects.</li>{{/each}}
+      </ul>
+    </div>
+
+    <div class="tab" data-tab="notes">
+      <div class="editor-wrapper">
+        {{editor system.notes target="system.notes" button=true owner=owner editable=editable}}
+      </div>
+    </div>
+
+  </section>
+</form>
