@@ -1,7 +1,7 @@
 {
   "id": "ttxworks",
   "title": "TTXWorks",
-  "description": "A narrative framework for running tabletop exercises as structured, consequence-driven simulations. Inspired by Blades in the Dark.",
+  "description": "A narrative framework for running tabletop exercises as structured, consequence-driven simulations.",
   "version": "0.1.2",
   "compatibility": {
     "minimum": "12",
