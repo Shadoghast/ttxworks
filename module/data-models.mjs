@@ -157,15 +157,34 @@ export class NodeData extends foundry.abstract.TypeDataModel {
  * with the connection records in TimelineManager by _syncActorArrays().
  * They exist so templates can display connection info without a separate
  * lookup, but TimelineManager's connection records are the source of truth.
+ *
+ * ── Why all fields are optional ───────────────────────────────────────────
+ * Every field uses required:false / blank:true / nullable:true (where
+ * applicable) so that creating a new Event with only a name never triggers
+ * a validation error. The GM fills in the details after the node appears on
+ * the canvas. Fields that need a safe "empty" state default to "" or null
+ * rather than a value that would confuse the UI.
  */
 export class EventData extends foundry.abstract.TypeDataModel {
   static defineSchema() {
     return {
-      dateTime:     new fields.StringField({ required: true, blank: false, initial: "" }),
+      // The date/time label shown on the timeline node (e.g. "Day 1 – 09:42").
+      // Optional: a newly created Event has no timestamp until the GM sets one.
+      dateTime:     new fields.StringField({ required: false, blank: true, initial: "" }),
+
+      // Rich-text narrative description — what happened, context, GM notes.
       description:  new fields.HTMLField({ required: false, blank: true, initial: "" }),
-      predecessors: new fields.ArrayField(new fields.StringField({ blank: false })),
-      followers:    new fields.ArrayField(new fields.StringField({ blank: false })),
-      visible:      new fields.BooleanField({ required: true, initial: true }),
+
+      // Arrays of actor IDs that connect this Event to others on the canvas.
+      // blank:true on the inner StringField prevents validation errors if an
+      // empty string ever ends up in the array (e.g. from a partial save).
+      predecessors: new fields.ArrayField(new fields.StringField({ blank: true })),
+      followers:    new fields.ArrayField(new fields.StringField({ blank: true })),
+
+      // Whether participants (non-GM users) can see this node on the canvas.
+      visible:      new fields.BooleanField({ required: false, initial: true }),
+
+      // Canvas coordinates — null means "not yet placed; use auto-layout".
       canvasX:      new fields.NumberField({ required: false, nullable: true, initial: null }),
       canvasY:      new fields.NumberField({ required: false, nullable: true, initial: null })
     };
@@ -184,20 +203,47 @@ export class EventData extends foundry.abstract.TypeDataModel {
  *   - resolved / outcome: once the dice are rolled, resolved is set to true
  *               and outcome holds the result string (e.g. "critical-success").
  *               The timeline node then displays the outcome badge.
+ *
+ * ── Why all fields are optional ───────────────────────────────────────────
+ * Same rationale as EventData: the GM presses E or A on the canvas and a
+ * node should appear immediately with no form to fill out first. Every field
+ * has a safe empty default so Foundry never rejects the creation payload.
+ * The GM then clicks the node to open the sheet and fills in details.
  */
 export class ActionData extends foundry.abstract.TypeDataModel {
   static defineSchema() {
     return {
-      dateTime:      new fields.StringField({ required: true, blank: false, initial: "" }),
+      // The date/time label (e.g. "Day 1 – 10:15"). Optional on creation.
+      dateTime:      new fields.StringField({ required: false, blank: true, initial: "" }),
+
+      // Rich-text description of the action and its context.
       description:   new fields.HTMLField({ required: false, blank: true, initial: "" }),
-      predecessors:  new fields.ArrayField(new fields.StringField({ blank: false })),
-      followers:     new fields.ArrayField(new fields.StringField({ blank: false })),
-      visible:       new fields.BooleanField({ required: true, initial: true }),
+
+      // Connection arrays — actor IDs of predecessor/follower nodes.
+      predecessors:  new fields.ArrayField(new fields.StringField({ blank: true })),
+      followers:     new fields.ArrayField(new fields.StringField({ blank: true })),
+
+      // Visibility to non-GM players on the canvas.
+      visible:       new fields.BooleanField({ required: false, initial: true }),
+
+      // Canvas position — null until placed or auto-laid-out.
       canvasX:       new fields.NumberField({ required: false, nullable: true, initial: null }),
       canvasY:       new fields.NumberField({ required: false, nullable: true, initial: null }),
+
+      // The actor who performs this action (Individual or Team actor ID).
+      // Null until the GM links one via the sheet.
       actorRef:      new fields.StringField({ required: false, blank: true, nullable: true, initial: null }),
-      targetNumber:  new fields.NumberField({ required: true, integer: true, min: 1, max: 100, initial: 50 }),
-      resolved:      new fields.BooleanField({ required: true, initial: false }),
+
+      // Target Number percentage for the d100 roll-under check.
+      // Defaults to 50 (Stable position) — the GM adjusts before rolling.
+      targetNumber:  new fields.NumberField({ required: false, integer: true, min: 1, max: 100, initial: 50 }),
+
+      // Whether the action roll has been made yet.
+      resolved:      new fields.BooleanField({ required: false, initial: false }),
+
+      // The roll outcome string once resolved. One of:
+      //   "critical-success" | "success" | "complication" | "failure" | "critical-failure"
+      // Null until resolved is true.
       outcome:       new fields.StringField({ required: false, blank: true, nullable: true, initial: null })
     };
   }
