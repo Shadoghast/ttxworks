@@ -11,7 +11,7 @@ import {
 
 import { TTXWorksActor, TTXWorksItem } from "./module/documents.mjs";
 import { TimelineManager }            from "./module/timeline-manager.mjs";
-import { TimelineCanvas }             from "./module/timeline-canvas.mjs";
+import { TimelineCanvas, TLMode }     from "./module/timeline-canvas.mjs";
 
 import { IndividualSheet } from "./module/sheets/individual-sheet.mjs";
 import { TeamSheet }       from "./module/sheets/team-sheet.mjs";
