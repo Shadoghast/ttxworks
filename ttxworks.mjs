@@ -260,9 +260,8 @@ Hooks.once("init", function () {
     "systems/ttxworks/templates/item/asset-sheet.hbs",
     "systems/ttxworks/templates/item/clock-sheet.hbs",
     "systems/ttxworks/templates/item/effect-sheet.hbs",
-    "systems/ttxworks/templates/partials/clock-widget.hbs",
-    "systems/ttxworks/templates/partials/focus-stress-bar.hbs",
-    "systems/ttxworks/templates/partials/item-list.hbs",
+    // NOTE: clock-widget, focus-stress-bar, and item-list are CSS class names
+    // used inline in templates — they are NOT Handlebars partials, so no files exist.
     "systems/ttxworks/templates/actor/event-sheet.hbs",
     "systems/ttxworks/templates/actor/action-sheet.hbs",
     "systems/ttxworks/templates/timeline/timeline-app.hbs"
@@ -308,48 +307,67 @@ Hooks.once("ready", async function () {
 
 Hooks.on("getSceneControlButtons", controls => {
   // Read current mode (may be undefined during very early init; fall back to "timeline")
-  const mode    = game.settings?.get("ttxworks", "exerciseMode") ?? "timeline";
+  const mode       = game.settings?.get("ttxworks", "exerciseMode") ?? "timeline";
   const isTimeline = mode === "timeline";
 
-  controls.push({
-    name:    "ttxworks-timeline",
-    title:   "TTXWorks",
-    icon:    "fas fa-project-diagram",
-    layer:   "controls",
-    visible: true,
-    tools: [
-      {
-        name:    "open-timeline",
-        title:   "Open Timeline Map",
-        icon:    "fas fa-project-diagram",
-        button:  true,
-        onClick: () => game.ttxworks.timelineCanvas?.render(true)
-      },
-      {
-        // Shows current mode; clicking switches to the opposite mode.
-        name:    "toggle-mode",
-        title:   isTimeline
-                   ? "Switch to Detail Mode (Individuals / Teams)"
-                   : "Switch to Timeline Mode (Events / Actions)",
-        icon:    isTimeline ? "fas fa-users" : "fas fa-stream",
-        button:  true,
-        onClick: async () => {
-          const current = game.settings.get("ttxworks", "exerciseMode");
-          const next    = current === "timeline" ? "detail" : "timeline";
-          await game.settings.set("ttxworks", "exerciseMode", next);
-
-          // Re-render the Scene Controls so the toggle icon/label refreshes.
-          ui.controls.render();
-
-          ui.notifications.info(
-            next === "timeline"
-              ? "TTXWorks: Switched to Timeline Mode — Events & Actions"
-              : "TTXWorks: Switched to Detail Mode — Individuals, Teams, Adversaries & Nodes"
-          );
-        }
+  // The two toolbar buttons are the same regardless of Foundry version;
+  // only the container format differs between V12 (array) and V13 (object).
+  const toolsArray = [
+    {
+      name:    "open-timeline",
+      title:   "Open Timeline Map",
+      icon:    "fas fa-project-diagram",
+      button:  true,
+      onClick: () => game.ttxworks.timelineCanvas?.render(true)
+    },
+    {
+      // Shows current mode; clicking switches to the opposite mode.
+      name:    "toggle-mode",
+      title:   isTimeline
+                 ? "Switch to Detail Mode (Individuals / Teams)"
+                 : "Switch to Timeline Mode (Events / Actions)",
+      icon:    isTimeline ? "fas fa-users" : "fas fa-stream",
+      button:  true,
+      onClick: async () => {
+        const current = game.settings.get("ttxworks", "exerciseMode");
+        const next    = current === "timeline" ? "detail" : "timeline";
+        await game.settings.set("ttxworks", "exerciseMode", next);
+        // Re-render Scene Controls so the toggle icon/label refreshes.
+        ui.controls.render();
+        ui.notifications.info(
+          next === "timeline"
+            ? "TTXWorks: Switched to Timeline Mode — Events & Actions"
+            : "TTXWorks: Switched to Detail Mode — Individuals, Teams, Adversaries & Nodes"
+        );
       }
-    ]
-  });
+    }
+  ];
+
+  // Foundry V12 passes controls as a flat Array; V13 changed it to a plain Object.
+  // We detect which format we have and write accordingly so the system works on both.
+  if (Array.isArray(controls)) {
+    // V12 — append a new control group to the array
+    controls.push({
+      name:    "ttxworks-timeline",
+      title:   "TTXWorks",
+      icon:    "fas fa-project-diagram",
+      layer:   "controls",
+      visible: true,
+      tools:   toolsArray
+    });
+  } else {
+    // V13 — assign to a named key; tools must also be an object keyed by name
+    const toolsObj = {};
+    for (const t of toolsArray) toolsObj[t.name] = t;
+    controls["ttxworks-timeline"] = {
+      name:    "ttxworks-timeline",
+      title:   "TTXWorks",
+      icon:    "fas fa-project-diagram",
+      layer:   "controls",
+      visible: true,
+      tools:   toolsObj
+    };
+  }
 });
 
 // ── Actor-Creation Dialog Filter ───────────────────────────────────────────
@@ -362,19 +380,25 @@ Hooks.on("getSceneControlButtons", controls => {
 // is safer than matching on the dialog title (which may be localised).
 
 Hooks.on("renderDialog", (dialog, html) => {
-  const typeSelect = html.find('select[name="type"]');
-  if (!typeSelect.length) return;           // not the Create Actor dialog
+  // V12 passes a jQuery object; V13 passes a plain HTMLElement.
+  // Normalise to a plain element so the same code works on both versions.
+  const root = html instanceof HTMLElement ? html : (html[0] ?? html);
+
+  const typeSelect = root.querySelector('select[name="type"]');
+  if (!typeSelect) return;                  // not the Create Actor dialog
 
   const mode     = game.settings?.get("ttxworks", "exerciseMode") ?? "timeline";
   const hideList = mode === "timeline" ? DETAIL_TYPES : TIMELINE_TYPES;
 
-  hideList.forEach(t => typeSelect.find(`option[value="${t}"]`).remove());
+  hideList.forEach(t => {
+    const opt = typeSelect.querySelector(`option[value="${t}"]`);
+    if (opt) opt.remove();
+  });
 
   // If only one option remains after filtering, auto-select it so the GM
-  // doesn't have to make a redundant choice (e.g., in Timeline Mode the only
-  // sensible starting pick might be "event").
-  const remaining = typeSelect.find("option");
-  if (remaining.length === 1) typeSelect.val(remaining.first().val());
+  // doesn't have to make a redundant choice.
+  const remaining = typeSelect.querySelectorAll("option");
+  if (remaining.length === 1) typeSelect.value = remaining[0].value;
 });
 
 // ── Actors Sidebar Filter ──────────────────────────────────────────────────
@@ -391,15 +415,18 @@ Hooks.on("renderActorDirectory", (app, html) => {
   const mode     = game.settings?.get("ttxworks", "exerciseMode") ?? "timeline";
   const hideList = mode === "timeline" ? DETAIL_TYPES : TIMELINE_TYPES;
 
-  hideList.forEach(type => {
-    // Each actor entry has a data-document-id; we look up the actor to get its type.
-    html.find(".directory-item.actor").each((_, el) => {
-      const id    = el.dataset.documentId;
-      const actor = game.actors?.get(id);
-      if (actor && hideList.includes(actor.type)) {
-        el.style.display = "none";
-      }
-    });
+  // V12 passes a jQuery object; V13 passes a plain HTMLElement.
+  // Normalise to a plain element so the same code works on both versions.
+  const root = html instanceof HTMLElement ? html : (html[0] ?? html);
+
+  // Each actor entry carries data-document-id; look up the actor to get its type
+  // and hide it if it belongs to the inactive mode.
+  root.querySelectorAll(".directory-item.actor").forEach(el => {
+    const id    = el.dataset.documentId;
+    const actor = game.actors?.get(id);
+    if (actor && hideList.includes(actor.type)) {
+      el.style.display = "none";
+    }
   });
 });
 
