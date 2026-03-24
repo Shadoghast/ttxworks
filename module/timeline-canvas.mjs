@@ -1,16 +1,67 @@
 /**
  * TimelineCanvas — the TTXWorks interactive timeline map window.
  *
- * Built as a standard Foundry Application (compatible with v12 and v13).
- * Rendering pipeline:
- *   render(true)  → opens/re-draws the HTML shell (toolbar, canvas el, SVG, help bar)
- *   refresh()     → re-draws SVG nodes + SVG connections without touching the DOM shell
- *                   (called on actor/connection data changes; debounced to 100 ms)
+ * This is the central visual interface for a TTXWorks exercise. It displays
+ * all "event" and "action" actors as draggable nodes on an infinite canvas,
+ * connected by arrows that show causal and temporal relationships.
  *
- * Phase 3: full SVG rendering for nodes and connections.
- *   Nodes   → <g class="tl-node"> elements inside <g class="svg-world">
- *   Conns   → <g class="tl-connection-group"> + <path> inside <g class="svg-world">
- *   Background dot grid pans via CSS background-position on the wrap element.
+ * ── Architecture ─────────────────────────────────────────────────────────────
+ *
+ * TimelineCanvas extends Foundry's built-in Application class, which handles
+ * the window chrome (title bar, close button, resize) and injects a Handlebars
+ * template into the DOM. We then draw on top of that template using SVG.
+ *
+ * The rendering pipeline has two levels:
+ *
+ *   render(true)  → Full re-render: rebuilds the entire HTML shell from the
+ *                   template (toolbar, SVG element, status bar). Called when
+ *                   the window is first opened or explicitly forced.
+ *
+ *   refresh()     → Lightweight redraw: re-draws only the SVG nodes and
+ *                   connections inside the existing shell. Called automatically
+ *                   whenever actor data or connection data changes (debounced
+ *                   to 100 ms to batch rapid updates). Does NOT rebuild the
+ *                   HTML shell — toolbar state and pan/zoom are preserved.
+ *
+ * ── SVG structure ────────────────────────────────────────────────────────────
+ *
+ * The template (timeline-app.hbs) contains an <svg> overlay that fills the
+ * canvas area. Inside the SVG there is a single <g class="svg-world"> group.
+ * All nodes and connections are children of this group.
+ *
+ * To pan and zoom the canvas we apply a CSS transform to svg-world:
+ *   transform="translate(panX, panY) scale(zoom)"
+ * Because everything lives inside that one group, a single transform update
+ * moves and scales the entire scene at once.
+ *
+ * ── Mode state machine ───────────────────────────────────────────────────────
+ *
+ * The canvas has a current interaction mode stored in this._state.mode.
+ * Modes are defined in the TLMode enum (below). The mode controls what
+ * happens when the user clicks on the canvas background or on a node:
+ *
+ *   NORMAL          → click background to deselect; click node to select/drag
+ *   CREATING_EVENT  → next background click opens the "New Event" dialog
+ *   CREATING_ACTION → next background click opens the "New Action" dialog
+ *   CONNECTING      → next node click completes a connection from the source
+ *   ADDING_WAYPOINT → (Phase 5) adds a bend-point to a connection
+ *   ADDING_TEXT     → (Phase 5) places a free-text annotation
+ *
+ * The current mode is displayed in the .tl-mode-indicator bar. Pressing Esc
+ * always returns to NORMAL. The toolbar buttons set the mode directly.
+ *
+ * ── Data storage ─────────────────────────────────────────────────────────────
+ *
+ * Nodes: each "event" or "action" actor in Foundry's actor collection is a
+ * node. Position is stored in system.canvasX / system.canvasY on the actor.
+ * If those are null, the canvas assigns an automatic grid position that is
+ * kept in memory (this._autoPositions) until the user drags the node.
+ *
+ * Connections: stored as flags on a dedicated Journal Entry (managed by
+ * TimelineManager). Each connection has a sourceId, targetId, and optional
+ * metadata (label, duration, isParallel).
+ *
+ * Built as a standard Foundry Application (compatible with v12 and v13).
  */
 
 import { TimelineManager } from "./timeline-manager.mjs";
@@ -40,7 +91,21 @@ export class TimelineCanvas extends Application {
   constructor(options = {}) {
     super(options);
 
-    /** @type {{ panX: number, panY: number, zoom: number, mode: string, selectedId: string|null, expandedId: string|null, connectSourceId: string|null }} */
+    /**
+     * The entire runtime state of the canvas lives here.
+     * Keeping it in one object makes it easy to inspect in the browser
+     * console and avoids scattering related variables across the class.
+     *
+     * @type {{
+     *   panX:            number,   // horizontal pan offset in screen pixels
+     *   panY:            number,   // vertical pan offset in screen pixels
+     *   zoom:            number,   // scale factor (1 = 100%, 0.5 = 50%, etc.)
+     *   mode:            string,   // current interaction mode (see TLMode enum)
+     *   selectedId:      string|null,  // actor id OR connection id currently selected
+     *   expandedId:      string|null,  // reserved for future detail-panel expansion
+     *   connectSourceId: string|null   // source node id while in CONNECTING mode
+     * }}
+     */
     this._state = {
       panX:            0,
       panY:            0,
@@ -54,30 +119,56 @@ export class TimelineCanvas extends Application {
     /** PIXI Application instance — not used in Phase 3 (SVG-only rendering) */
     this._pixi = null;
 
-    /** Debounce timer for refresh() */
+    /** Debounce timer handle for refresh() — see _scheduleRefresh() */
     this._refreshTimer = null;
 
-    /** Bound hook handlers (stored so we can remove them on close) */
+    /**
+     * IDs returned by Hooks.on() for each hook we register.
+     * Stored so we can call Hooks.off(id) in _teardownHooks() when the
+     * window closes. Without this cleanup, stale listeners accumulate and
+     * cause errors after the canvas is closed and re-opened.
+     */
     this._hookIds = [];
 
     /**
-     * Auto-layout positions for actors whose canvasX/Y are null.
-     * Keyed by actorId, values are {x, y}.
-     * Cleared of entries whenever the actor gains a saved position.
+     * Computed grid positions for actors whose system.canvasX/Y are null.
+     *
+     * When a new actor appears with no saved canvas position, we assign it a
+     * temporary slot in a grid layout. This map stores those positions keyed
+     * by actor id. Once the user drags the node (saving real coords), the
+     * entry is removed so the saved coords are used instead.
+     *
      * @type {Map<string, {x:number, y:number}>}
      */
     this._autoPositions = new Map();
 
     /**
-     * Live drag position override — prevents stale saved coords being used
-     * while the user is mid-drag.
+     * Live position override applied while the user is dragging a node.
+     *
+     * During a drag, the node's visual position updates every frame via
+     * direct SVG transform manipulation (fast). The saved system.canvasX/Y
+     * only updates on pointerup (slow Foundry update). This map bridges the
+     * gap: _getNodePosition() checks here first, so connection paths always
+     * follow the node accurately mid-drag.
+     *
      * @type {Map<string, {x:number, y:number}>}
      */
     this._dragOverride = new Map();
 
     /**
-     * Active drag state set by _attachNodeListeners.
-     * @type {{ actorId:string, startScreenX:number, startScreenY:number, startWorldX:number, startWorldY:number, moved:boolean }|null}
+     * State captured at the start of a drag gesture.
+     *
+     * Set in _attachNodeListeners on pointerdown, cleared on pointerup.
+     * Null when no drag is in progress.
+     *
+     * @type {{
+     *   actorId:      string,   // which actor is being dragged
+     *   startScreenX: number,   // pointer screen coords at drag start
+     *   startScreenY: number,
+     *   startWorldX:  number,   // actor world coords at drag start
+     *   startWorldY:  number,
+     *   moved:        boolean   // true once pointer has moved > 3px (distinguishes click from drag)
+     * }|null}
      */
     this._dragState = null;
   }
@@ -99,6 +190,14 @@ export class TimelineCanvas extends Application {
 
   // ── getData (template context) ────────────────────────────────────────────
 
+  /**
+   * Supply data to the Handlebars template (timeline-app.hbs).
+   *
+   * Foundry calls this automatically before rendering. The values here
+   * are used by the toolbar and status bar in the template. They are
+   * NOT live-updated after render — the info bar is refreshed separately
+   * by _updateInfoBar() on each refresh() call.
+   */
   getData() {
     return {
       mode:      this._state.mode,
@@ -110,42 +209,65 @@ export class TimelineCanvas extends Application {
 
   // ── Rendering lifecycle ───────────────────────────────────────────────────
 
-  /** @override — called after the HTML is injected into the DOM */
+  /**
+   * @override
+   * Called by Foundry after the HTML template is injected into the DOM.
+   *
+   * This is where we wire up all interactive behaviour. The HTML shell
+   * (toolbar, SVG, status bar) already exists at this point; we just
+   * need to attach listeners and trigger the first SVG draw.
+   */
   activateListeners(html) {
     super.activateListeners(html);
 
-    // Toolbar controls
+    // Zoom toolbar buttons — each press adjusts zoom by ±10%
     html.find(".tl-zoom-in").on("click",    () => this._adjustZoom(0.1));
     html.find(".tl-zoom-out").on("click",   () => this._adjustZoom(-0.1));
     html.find(".tl-zoom-reset").on("click", () => this._resetZoom());
+
+    // Fit-to-view — calculates the bounding box of all nodes and zooms/pans
+    // so they all fit within the visible canvas area
     html.find(".tl-fit").on("click",        () => this._fitToView());
 
-    // Mode indicator (click to cancel back to normal)
+    // Mode indicator bar — clicking it cancels the current mode back to NORMAL
+    // (same as pressing Esc). Useful when the user forgets which mode they're in.
     html.find(".tl-mode-indicator").on("click", () => this._setMode(TLMode.NORMAL));
 
-    // Canvas-wrap: pan and pointer events
+    // The canvas-wrap div is the invisible pan/zoom surface that sits behind
+    // the SVG. We attach pointer events here (not on the SVG directly) so that
+    // background clicks and drags work even on empty areas of the canvas.
     const wrap = html.find(".timeline-canvas-wrap")[0];
     if (wrap) {
       wrap.addEventListener("pointerdown", this._onPointerDown.bind(this));
       wrap.addEventListener("pointermove", this._onPointerMove.bind(this));
       wrap.addEventListener("pointerup",   this._onPointerUp.bind(this));
+      // { passive: false } is required so we can call preventDefault() on wheel
+      // events, which prevents the page from scrolling while zooming.
       wrap.addEventListener("wheel",       this._onWheel.bind(this), { passive: false });
     }
 
-    // Keyboard shortcuts — scoped to this window element
+    // Keyboard shortcuts need the window element to be focusable.
+    // tabindex="0" makes any element focusable; we then focus it immediately
+    // so keyboard events fire without requiring a click first.
     const el = html[0].closest(".app") ?? html[0];
     el.setAttribute("tabindex", "0");
     el.addEventListener("keydown", this._onKeyDown.bind(this));
     el.focus();
 
-    // No PIXI init needed — background handled by CSS dot grid
+    // Background is a CSS dot-grid; no PIXI canvas needed at this phase.
     this._initPIXI(html);
 
-    // Initial draw
+    // Trigger the first SVG draw. We use _scheduleRefresh() (debounced) rather
+    // than refresh() directly to handle the case where render() is called
+    // multiple times in rapid succession during Foundry startup.
     this._scheduleRefresh();
   }
 
-  /** @override */
+  /**
+   * @override
+   * Clean up before the window is removed from the DOM.
+   * Always call teardown methods here to avoid memory leaks.
+   */
   async close(options = {}) {
     this._teardownHooks();
     this._destroyPIXI();
@@ -173,7 +295,15 @@ export class TimelineCanvas extends Application {
 
   // ── refresh (debounced redraw) ────────────────────────────────────────────
 
-  /** Schedule a debounced refresh (100 ms window). */
+  /**
+   * Schedule a debounced refresh of the SVG canvas.
+   *
+   * "Debouncing" means: if this is called multiple times within 100 ms,
+   * only one refresh actually runs (after the last call settles). This is
+   * important because Foundry can fire several hook events in quick
+   * succession (e.g., multiple actor updates at startup), and we don't want
+   * to redraw the entire canvas for each one individually.
+   */
   _scheduleRefresh() {
     if (this._refreshTimer) clearTimeout(this._refreshTimer);
     this._refreshTimer = setTimeout(() => {
@@ -182,7 +312,16 @@ export class TimelineCanvas extends Application {
     }, 100);
   }
 
-  /** Re-draw SVG nodes and connections. */
+  /**
+   * Re-draw the SVG canvas: update the info bar, then re-draw all
+   * connections and nodes from current actor/connection data.
+   *
+   * Connections are drawn first so they appear beneath nodes in the SVG
+   * paint order (SVG has no z-index; later elements are drawn on top).
+   *
+   * Called by _scheduleRefresh() and by drag handlers that need an
+   * immediate connection redraw without a full debounce cycle.
+   */
   refresh() {
     if (!this.rendered) return;
     this._updateInfoBar();
@@ -190,6 +329,11 @@ export class TimelineCanvas extends Application {
     this._drawNodes();
   }
 
+  /**
+   * Update the text in the status bar at the bottom of the canvas.
+   * Shows current node count, connection count, and zoom level.
+   * Called on every refresh() so the numbers stay accurate.
+   */
   _updateInfoBar() {
     const el = this.element?.find?.(".tl-info-bar");
     if (!el?.length) return;
@@ -430,10 +574,23 @@ export class TimelineCanvas extends Application {
   }
 
   /**
-   * Assign auto-layout positions to actors whose canvasX/Y are null,
-   * if they don't already have an auto-position assigned.
-   * Sorts by dateTime then name; lays out in a grid.
-   * @param {Actor[]} actors
+   * Assign auto-layout grid positions to any actors that don't yet have
+   * saved canvas coordinates (system.canvasX/Y == null) and haven't been
+   * given a temporary auto-position yet.
+   *
+   * Algorithm:
+   *   1. Collect actors that are unpositioned AND not already in _autoPositions.
+   *   2. Sort them by dateTime (chronological order), then by name as tiebreaker.
+   *      This means newly added nodes appear roughly in timeline order rather
+   *      than randomly.
+   *   3. Assign each a slot in a square grid, starting after any previously
+   *      auto-positioned nodes (startIndex = _autoPositions.size) to avoid
+   *      overwriting positions already assigned this session.
+   *
+   * The 210px column gap and 150px row gap are chosen to give comfortable
+   * spacing between nodes at 100% zoom.
+   *
+   * @param {Actor[]} actors  All visible timeline actors
    */
   _ensureAutoLayout(actors) {
     const unpositioned = actors.filter(
@@ -441,13 +598,14 @@ export class TimelineCanvas extends Application {
     );
     if (unpositioned.length === 0) return;
 
-    // Sort by dateTime, then name
+    // Sort chronologically so auto-layout reads left-to-right, top-to-bottom
     unpositioned.sort((a, b) => {
       const dtCmp = (a.system.dateTime ?? "").localeCompare(b.system.dateTime ?? "");
       return dtCmp !== 0 ? dtCmp : a.name.localeCompare(b.name);
     });
 
-    // Determine starting index to avoid collisions with already-positioned nodes
+    // Start at the next available grid slot after previously auto-positioned nodes.
+    // Square-root gives roughly equal rows and columns for any number of nodes.
     const startIndex = this._autoPositions.size;
     const cols = Math.max(1, Math.ceil(Math.sqrt(unpositioned.length + startIndex)));
 
@@ -465,27 +623,53 @@ export class TimelineCanvas extends Application {
   // ── Node interaction ──────────────────────────────────────────────────────
 
   /**
-   * Attach pointer and double-click listeners to a node <g> element.
-   * Handles: drag (move + save), single-click (select + property card),
-   * double-click (open sheet), and CONNECTING mode completion.
-   * @param {SVGGElement} el
-   * @param {Actor} actor
+   * Attach all pointer interaction listeners to a rendered node <g> element.
+   *
+   * This sets up a complete drag-to-move system with three gestures:
+   *   - Single click (no significant movement) → select node, show property card
+   *   - Drag (pointer moves > 3px) → move node, save position on release
+   *   - Double-click → open the actor's full sheet
+   *
+   * In CONNECTING mode, clicking a node completes a connection from the
+   * previously selected source node rather than starting a drag.
+   *
+   * ── How pointer capture works ────────────────────────────────────────────
+   * setPointerCapture() on pointerdown tells the browser to route all
+   * subsequent pointermove/pointerup events for this pointer to THIS element,
+   * even if the pointer moves outside the element. Without this, fast mouse
+   * movements can "escape" the node element and the drag breaks.
+   *
+   * ── Distinguishing click from drag ──────────────────────────────────────
+   * We only set _dragState.moved = true once the pointer has moved more than
+   * 3px from its starting position. This threshold prevents accidental micro-
+   * drags when the user just intends to click.
+   *
+   * ── World vs screen coordinates ─────────────────────────────────────────
+   * Mouse events give us screen pixels. World coordinates are what the SVG
+   * uses. To convert: worldDelta = screenDelta / zoom.
+   * The node's world position = startWorldPos + (currentScreen - startScreen) / zoom.
+   *
+   * @param {SVGGElement} el    The node's <g> element in the SVG
+   * @param {Actor}       actor The Foundry actor this node represents
    */
   _attachNodeListeners(el, actor) {
-    // ── Pointer down: start drag or complete connection ──────────────────────
+    // ── Pointer down: begin drag or complete a connection ────────────────────
     el.addEventListener("pointerdown", (e) => {
-      if (e.button !== 0) return;
-      e.stopPropagation();
+      if (e.button !== 0) return;  // only respond to left-click
+      e.stopPropagation();         // prevent the canvas-wrap from also handling this
 
       const mode = this._state.mode;
 
       if (mode === TLMode.CONNECTING) {
+        // In CONNECTING mode, clicking a node finishes the arrow from the
+        // source node (stored in _state.connectSourceId) to this node.
         e.preventDefault();
         this._completeConnection(actor.id);
         return;
       }
 
       if (mode === TLMode.NORMAL) {
+        // Record where the drag started so we can compute delta later
         const pos = this._getNodePosition(actor);
         this._dragState = {
           actorId:      actor.id,
@@ -495,62 +679,72 @@ export class TimelineCanvas extends Application {
           startWorldY:  pos.y,
           moved:        false
         };
+        // Capture the pointer so we receive move/up events even if the mouse
+        // moves outside this SVG element
         el.setPointerCapture(e.pointerId);
       }
     });
 
-    // ── Pointer move: update drag ────────────────────────────────────────────
+    // ── Pointer move: live-update node position during drag ──────────────────
     el.addEventListener("pointermove", (e) => {
       if (!this._dragState || this._dragState.actorId !== actor.id) return;
 
+      // Convert screen-space delta to world-space delta by dividing by zoom.
+      // If zoom = 2 (zoomed in), the node should move half as many world units
+      // as the pointer moved in screen pixels.
       const dx = (e.clientX - this._dragState.startScreenX) / this._state.zoom;
       const dy = (e.clientY - this._dragState.startScreenY) / this._state.zoom;
 
+      // Only start dragging after the pointer moves > 3px (avoids micro-drags)
       if (Math.abs(dx) > 3 || Math.abs(dy) > 3) this._dragState.moved = true;
 
       if (this._dragState.moved) {
         const nx = this._dragState.startWorldX + dx;
         const ny = this._dragState.startWorldY + dy;
 
-        // Update position override (used by _drawConnections)
+        // Write to _dragOverride so _getNodePosition() returns the live position
+        // (used when _drawConnections() runs below)
         this._dragOverride.set(actor.id, { x: nx, y: ny });
 
-        // Move this node directly (skip full refresh for performance)
+        // Move the node SVG element directly — much faster than a full refresh()
+        // because we don't need to rebuild every node, just this one's transform.
         el.setAttribute("transform", `translate(${nx},${ny})`);
 
-        // Redraw connections to follow the moving node
+        // Redraw connections so they follow the moving node in real time.
+        // We only redraw connections (not nodes) for performance.
         this._drawConnections();
       }
     });
 
-    // ── Pointer up: save position or treat as click ──────────────────────────
+    // ── Pointer up: save position to actor, or treat as a click ─────────────
     el.addEventListener("pointerup", async (e) => {
       if (!this._dragState || this._dragState.actorId !== actor.id) return;
 
       const ds = this._dragState;
       this._dragState = null;
-      this._dragOverride.delete(actor.id);
+      this._dragOverride.delete(actor.id); // clear live override; saved coords take over
 
       if (ds.moved) {
-        // Save final position
+        // Compute the final world position from the total pointer displacement
         const savedX = Math.round(ds.startWorldX + (e.clientX - ds.startScreenX) / this._state.zoom);
         const savedY = Math.round(ds.startWorldY + (e.clientY - ds.startScreenY) / this._state.zoom);
 
+        // Persist the position on the actor. This triggers the updateActor hook,
+        // which calls _scheduleRefresh() automatically — no manual refresh needed.
         await actor.update({
           "system.canvasX": savedX,
           "system.canvasY": savedY
         });
-        // Note: updateActor hook triggers _scheduleRefresh automatically
       } else {
-        // Click: select and show property card
+        // The pointer didn't move far enough to count as a drag → treat as click
         this._selectNode(actor.id, e);
       }
     });
 
-    // ── Double-click: open sheet ─────────────────────────────────────────────
+    // ── Double-click: open the actor's full sheet ────────────────────────────
     el.addEventListener("dblclick", (e) => {
       e.stopPropagation();
-      this._dragState = null;
+      this._dragState = null; // cancel any pending drag state
       actor.sheet.render(true);
     });
   }
@@ -644,7 +838,10 @@ export class TimelineCanvas extends Application {
       </div>
     `;
 
-    // Position card to the right of the node (clamp to viewport)
+    // Position the card to the right of the node's edge. If it would overflow
+    // the right side of the canvas wrap, flip it to the left side instead.
+    // The horizontal offset accounts for node half-width (action rect or event circle).
+    // Top is aligned to the node centre minus 40px, clamped to avoid clipping at top.
     const cardW = 220;
     const wrapW = wrap.clientWidth;
     let left = screenX + (isAction ? ACTION_W / 2 + 10 : EVENT_RADIUS + 10);
@@ -816,12 +1013,28 @@ export class TimelineCanvas extends Application {
   }
 
   /**
-   * Adjust zoom by delta.
-   * If clientX/clientY are provided, zoom toward that screen point so the
-   * world point under the cursor remains stationary.
-   * @param {number}  delta
-   * @param {number=} clientX
-   * @param {number=} clientY
+   * Adjust the zoom level by delta and optionally zoom toward a screen point.
+   *
+   * When clientX/clientY are provided (e.g., from a wheel event), the zoom
+   * is "anchored" to that point — the world coordinate under the cursor stays
+   * visually fixed while everything else scales around it.
+   *
+   * ── Math explanation ─────────────────────────────────────────────────────
+   * Before zooming, the world point under the cursor is:
+   *   worldX = (cursorX - panX) / prevZoom
+   *
+   * After zooming, we want that same world point to be under the cursor:
+   *   cursorX = worldX * newZoom + newPanX
+   *   → newPanX = cursorX - worldX * newZoom
+   *
+   * This formula keeps the canvas feeling "natural" — zooming in on an area
+   * doesn't shift the view to a different part of the canvas.
+   *
+   * Zoom is clamped to [0.2, 3] (20% to 300%).
+   *
+   * @param {number}  delta    How much to change zoom (positive = zoom in)
+   * @param {number=} clientX  Screen X to zoom toward (from event.clientX)
+   * @param {number=} clientY  Screen Y to zoom toward (from event.clientY)
    */
   _adjustZoom(delta, clientX, clientY) {
     const prevZoom = this._state.zoom;
@@ -831,12 +1044,12 @@ export class TimelineCanvas extends Application {
       const wrap = this.element?.find?.(".timeline-canvas-wrap")[0];
       if (wrap) {
         const rect   = wrap.getBoundingClientRect();
-        const cx     = clientX - rect.left;
+        const cx     = clientX - rect.left;  // cursor position relative to wrap
         const cy     = clientY - rect.top;
-        // World point currently under the cursor
+        // Which world coordinate is currently under the cursor?
         const worldX = (cx - this._state.panX) / prevZoom;
         const worldY = (cy - this._state.panY) / prevZoom;
-        // After zoom, adjust pan so worldX/Y stays under cursor
+        // After scaling, shift pan so that same world coord stays under cursor
         this._state.panX = cx - worldX * newZoom;
         this._state.panY = cy - worldY * newZoom;
       }
@@ -856,8 +1069,14 @@ export class TimelineCanvas extends Application {
   }
 
   /**
-   * Fit all visible nodes into the current viewport.
-   * Calculates the bounding box of all node positions and sets pan/zoom accordingly.
+   * Fit all visible nodes into the current viewport with comfortable padding.
+   *
+   * Calculates the axis-aligned bounding box of all node world positions,
+   * then computes the zoom level that makes the whole bounding box visible,
+   * and the pan offset that centres it in the canvas area.
+   *
+   * Zoom is clamped to [0.2, 2] here (tighter upper bound than _adjustZoom)
+   * because fitting a single node to 300% zoom would look strange.
    */
   _fitToView() {
     const actors = this._getTimelineActors().filter(a => a.system.visible !== false);
@@ -895,9 +1114,23 @@ export class TimelineCanvas extends Application {
     this._updateInfoBar();
   }
 
-  /** Apply current pan/zoom to the SVG world group and shift the background grid. */
+  /**
+   * Apply the current pan and zoom values to the SVG and the background grid.
+   *
+   * Called after every pan or zoom change. Two things need updating:
+   *
+   *   1. The SVG world group transform — this moves and scales every node
+   *      and connection at once by transforming their shared parent <g>.
+   *
+   *   2. The CSS background-position of the canvas wrap — the dot-grid
+   *      background is a CSS repeating pattern. To make it feel like it's
+   *      "painted on" the canvas (rather than fixed to the screen), we shift
+   *      its position by (panX % gridSize, panY % gridSize). The modulo
+   *      keeps the value small so browsers don't accumulate floating-point
+   *      error on long pans.
+   */
   _applyTransform() {
-    // SVG world group
+    // Move and scale all SVG content via the world group transform
     const svgWorld = this.element?.find?.("g.svg-world")[0];
     if (svgWorld) {
       svgWorld.setAttribute("transform",
@@ -905,7 +1138,7 @@ export class TimelineCanvas extends Application {
       );
     }
 
-    // Shift the CSS dot-grid with pan so it feels "attached" to the world
+    // Shift the CSS dot-grid so it appears to pan with the world
     const wrap = this.element?.find?.(".timeline-canvas-wrap")[0];
     if (wrap) {
       const bpx = (this._state.panX % 40).toFixed(1);
@@ -913,7 +1146,7 @@ export class TimelineCanvas extends Application {
       wrap.style.backgroundPosition = `${bpx}px ${bpy}px`;
     }
 
-    // PIXI world container (preserved for future use)
+    // PIXI world container (preserved for potential future use)
     if (this._pixi?.stage) {
       const world = this._pixi.stage.getChildByName?.("world");
       if (world) {
@@ -926,6 +1159,19 @@ export class TimelineCanvas extends Application {
 
   // ── Mode management ───────────────────────────────────────────────────────
 
+  /**
+   * Switch to a new canvas interaction mode and update the UI to reflect it.
+   *
+   * The mode indicator bar at the bottom of the canvas shows the current mode
+   * and hints to the user what to do next (e.g., "Click canvas to place Event").
+   * The canvas cursor also changes to a crosshair in any non-NORMAL mode.
+   *
+   * Switching modes always clears connectSourceId, so if the user was in the
+   * middle of drawing a connection and switches to a different mode, the
+   * partial connection is abandoned cleanly.
+   *
+   * @param {string} mode  One of the TLMode constants
+   */
   _setMode(mode) {
     this._state.mode             = mode;
     this._state.connectSourceId  = null;
@@ -1085,6 +1331,18 @@ export class TimelineCanvas extends Application {
 
   // ── Hook registration / teardown ──────────────────────────────────────────
 
+  /**
+   * Subscribe to Foundry and TTXWorks events that should trigger a canvas redraw.
+   *
+   * We listen for changes to "event" and "action" actors (position updates,
+   * renames, new actors, deletions) and for the custom ttxworks.connectionsChanged
+   * hook fired by TimelineManager whenever a connection is added or removed.
+   *
+   * Hook IDs are stored in this._hookIds so _teardownHooks() can remove them
+   * cleanly when the canvas closes. Without cleanup, every time the user opens
+   * and closes the Timeline Map, stale listeners accumulate and eventually cause
+   * double-refresh bugs or errors on closed windows.
+   */
   _registerHooks() {
     this._hookIds.push(
       Hooks.on("createActor", (a)  => { if (this._isTimelineActor(a))  this._scheduleRefresh(); }),
@@ -1094,11 +1352,21 @@ export class TimelineCanvas extends Application {
     );
   }
 
+  /**
+   * Remove all hook subscriptions registered in _registerHooks().
+   * Called in close() to prevent stale listeners after the window closes.
+   */
   _teardownHooks() {
     for (const id of this._hookIds) Hooks.off(id);
     this._hookIds = [];
   }
 
+  /**
+   * Returns true if the actor is one of the two types that appear on the timeline.
+   * Used to filter out Individual, Team, Adversary, and Node actors from refresh triggers.
+   * @param {Actor} actor
+   * @returns {boolean}
+   */
   _isTimelineActor(actor) {
     return actor.type === "event" || actor.type === "action";
   }
