@@ -148,6 +148,105 @@ Hooks.once("init", function () {
     label: "TTXWORKS.SheetEffect"
   });
 
+  // ── Keybindings ───────────────────────────────────────────
+  // We register all Timeline Map keyboard shortcuts here using Foundry's native
+  // keybinding API instead of raw addEventListener() calls. Benefits:
+  //   • Keys appear in Configure Controls — users can rebind them
+  //   • PRIORITY precedence prevents conflicts with other modules
+  //   • Returning true consumes the event so it doesn't bubble further
+  //   • Works globally — no need for the canvas element to have DOM focus
+  //
+  // Each binding guards with isTimelineOpen() so the keys are silent when
+  // the Timeline Map window is closed.
+
+  /** Returns true only when the Timeline canvas window is currently rendered. */
+  const isTimelineOpen = () => !!game.ttxworks?.timelineCanvas?.rendered;
+
+  // E — enter "place Event" mode; next canvas click drops a new Event node
+  game.keybindings.register("ttxworks", "createEvent", {
+    name:       "TTXWORKS.Keybinding.CreateEvent",
+    hint:       "TTXWORKS.Keybinding.CreateEventHint",
+    editable:   [{ key: "KeyE" }],
+    precedence: CONST.KEYBINDING_PRECEDENCE.PRIORITY,
+    onDown: () => {
+      if (!isTimelineOpen()) return false;
+      game.ttxworks.timelineCanvas._setMode(TLMode.CREATING_EVENT);
+      return true; // returning true consumes the event — other modules won't see it
+    }
+  });
+
+  // A — enter "place Action" mode; next canvas click drops a new Action node
+  game.keybindings.register("ttxworks", "createAction", {
+    name:       "TTXWORKS.Keybinding.CreateAction",
+    hint:       "TTXWORKS.Keybinding.CreateActionHint",
+    editable:   [{ key: "KeyA" }],
+    precedence: CONST.KEYBINDING_PRECEDENCE.PRIORITY,
+    onDown: () => {
+      if (!isTimelineOpen()) return false;
+      game.ttxworks.timelineCanvas._setMode(TLMode.CREATING_ACTION);
+      return true;
+    }
+  });
+
+  // C — begin drawing a connection arrow from the currently selected node
+  game.keybindings.register("ttxworks", "connectNodes", {
+    name:       "TTXWORKS.Keybinding.Connect",
+    hint:       "TTXWORKS.Keybinding.ConnectHint",
+    editable:   [{ key: "KeyC" }],
+    precedence: CONST.KEYBINDING_PRECEDENCE.PRIORITY,
+    onDown: () => {
+      if (!isTimelineOpen()) return false;
+      const tl = game.ttxworks.timelineCanvas;
+      const selectedId = tl._state?.selectedId;
+      if (selectedId && game.actors.get(selectedId)) {
+        tl._startConnection(selectedId);
+      } else {
+        ui.notifications.info("Select an Event or Action first, then press C to connect.");
+      }
+      return true;
+    }
+  });
+
+  // T — enter text-label placement mode (reserved for Phase 5)
+  game.keybindings.register("ttxworks", "addText", {
+    name:       "TTXWORKS.Keybinding.AddText",
+    hint:       "TTXWORKS.Keybinding.AddTextHint",
+    editable:   [{ key: "KeyT" }],
+    precedence: CONST.KEYBINDING_PRECEDENCE.PRIORITY,
+    onDown: () => {
+      if (!isTimelineOpen()) return false;
+      game.ttxworks.timelineCanvas._setMode(TLMode.ADDING_TEXT);
+      return true;
+    }
+  });
+
+  // Escape — return to normal pointer mode from any active placement/connect mode.
+  // Marked uneditable so users can't accidentally clear this safety-valve key.
+  game.keybindings.register("ttxworks", "cancelMode", {
+    name:        "TTXWORKS.Keybinding.Cancel",
+    hint:        "TTXWORKS.Keybinding.CancelHint",
+    uneditable:  [{ key: "Escape" }],
+    precedence:  CONST.KEYBINDING_PRECEDENCE.PRIORITY,
+    onDown: () => {
+      if (!isTimelineOpen()) return false;
+      game.ttxworks.timelineCanvas._setMode(TLMode.NORMAL);
+      return true;
+    }
+  });
+
+  // Delete / Backspace — remove the selected node or connection arrow
+  game.keybindings.register("ttxworks", "deleteSelected", {
+    name:       "TTXWORKS.Keybinding.Delete",
+    hint:       "TTXWORKS.Keybinding.DeleteHint",
+    editable:   [{ key: "Delete" }, { key: "Backspace" }],
+    precedence: CONST.KEYBINDING_PRECEDENCE.PRIORITY,
+    onDown: () => {
+      if (!isTimelineOpen()) return false;
+      game.ttxworks.timelineCanvas._deleteSelected();
+      return true;
+    }
+  });
+
   // ── Handlebars Helpers ────────────────────────────────────
   _registerHandlebarsHelpers();
 

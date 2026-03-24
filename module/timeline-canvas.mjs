@@ -246,13 +246,10 @@ export class TimelineCanvas extends Application {
       wrap.addEventListener("wheel",       this._onWheel.bind(this), { passive: false });
     }
 
-    // Keyboard shortcuts need the window element to be focusable.
-    // tabindex="0" makes any element focusable; we then focus it immediately
-    // so keyboard events fire without requiring a click first.
-    const el = html[0].closest(".app") ?? html[0];
-    el.setAttribute("tabindex", "0");
-    el.addEventListener("keydown", this._onKeyDown.bind(this));
-    el.focus();
+    // Keyboard shortcuts are now handled globally via game.keybindings.register()
+    // in ttxworks.mjs (init hook), following Foundry best practice. No raw
+    // keydown listener needed here — the keybindings system handles focus,
+    // conflicts, and user rebinding automatically.
 
     // Background is a CSS dot-grid; no PIXI canvas needed at this phase.
     this._initPIXI(html);
@@ -891,46 +888,6 @@ export class TimelineCanvas extends Application {
   }
 
   // ── Keyboard shortcuts ────────────────────────────────────────────────────
-
-  _onKeyDown(event) {
-    if (["INPUT", "TEXTAREA", "SELECT"].includes(event.target.tagName)) return;
-
-    switch (event.key.toLowerCase()) {
-      case "e":
-        event.stopPropagation();
-        this._setMode(TLMode.CREATING_EVENT);
-        break;
-      case "a":
-        event.stopPropagation();
-        this._setMode(TLMode.CREATING_ACTION);
-        break;
-      case "c":
-        event.stopPropagation();
-        if (this._state.selectedId && game.actors.get(this._state.selectedId)) {
-          this._startConnection(this._state.selectedId);
-        } else {
-          ui.notifications.info("Select an Event or Action first, then press C to connect.");
-        }
-        break;
-      case "w":
-        event.stopPropagation();
-        // Phase 5: waypoint editing
-        break;
-      case "t":
-        event.stopPropagation();
-        this._setMode(TLMode.ADDING_TEXT);
-        break;
-      case "escape":
-        event.stopPropagation();
-        this._setMode(TLMode.NORMAL);
-        break;
-      case "delete":
-      case "backspace":
-        event.stopPropagation();
-        this._deleteSelected();
-        break;
-    }
-  }
 
   // ── Pan & zoom ────────────────────────────────────────────────────────────
 

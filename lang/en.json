@@ -141,5 +141,18 @@
   "TTXWORKS.ConnectionTimeScaleHours": "Hours",
   "TTXWORKS.ConnectionTimeScaleDays": "Days",
   "TTXWORKS.ConnectionTimeScaleWeeks": "Weeks",
-  "TTXWORKS.ConnectionTimeScaleMonths": "Months"
+  "TTXWORKS.ConnectionTimeScaleMonths": "Months",
+
+  "TTXWORKS.Keybinding.CreateEvent":      "Timeline: Place Event",
+  "TTXWORKS.Keybinding.CreateEventHint":  "Enter Event-placement mode — click the canvas to drop a new Event node.",
+  "TTXWORKS.Keybinding.CreateAction":     "Timeline: Place Action",
+  "TTXWORKS.Keybinding.CreateActionHint": "Enter Action-placement mode — click the canvas to drop a new Action node.",
+  "TTXWORKS.Keybinding.Connect":          "Timeline: Connect Nodes",
+  "TTXWORKS.Keybinding.ConnectHint":      "Begin drawing a connection arrow from the selected node to another.",
+  "TTXWORKS.Keybinding.AddText":          "Timeline: Add Text Label",
+  "TTXWORKS.Keybinding.AddTextHint":      "Enter text-label placement mode (Phase 5).",
+  "TTXWORKS.Keybinding.Cancel":           "Timeline: Cancel / Normal Mode",
+  "TTXWORKS.Keybinding.CancelHint":       "Return to normal pointer mode from any active placement or connection mode.",
+  "TTXWORKS.Keybinding.Delete":           "Timeline: Delete Selected",
+  "TTXWORKS.Keybinding.DeleteHint":       "Delete the currently selected node or connection arrow."
 }
