@@ -2,7 +2,7 @@
   "id": "ttxworks",
   "title": "TTXWorks",
   "description": "A narrative framework for running tabletop exercises as structured, consequence-driven simulations.",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "compatibility": {
     "minimum": "12",
     "verified": "13",
@@ -39,7 +39,7 @@
     }
   ],
   "manifest": "https://raw.githubusercontent.com/Shadoghast/ttxworks/main/system.json",
-  "download": "https://github.com/Shadoghast/ttxworks/archive/refs/tags/v0.2.1.zip",
+  "download": "https://github.com/Shadoghast/ttxworks/archive/refs/tags/v0.2.2.zip",
   "url": "https://github.com/Shadoghast/ttxworks",
   "socket": true,
   "initiative": "1d100",
