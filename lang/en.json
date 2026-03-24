@@ -1,4 +1,6 @@
 {
+  "TTXWORKS.SheetEvent": "Event Sheet",
+  "TTXWORKS.SheetAction": "Action Sheet",
   "TTXWORKS.SheetIndividual": "Individual Sheet",
   "TTXWORKS.SheetTeam": "Team Sheet",
   "TTXWORKS.SheetAdversary": "Adversary Sheet",
@@ -8,6 +10,8 @@
   "TTXWORKS.SheetClock": "Clock Sheet",
   "TTXWORKS.SheetEffect": "Effect Sheet",
 
+  "TTXWORKS.ActorEvent": "Event",
+  "TTXWORKS.ActorAction": "Action",
   "TTXWORKS.ActorIndividual": "Individual",
   "TTXWORKS.ActorTeam": "Team",
   "TTXWORKS.ActorAdversary": "Adversary",
@@ -114,5 +118,32 @@
   "TTXWORKS.UsesPerScenario": "Uses Per Scenario",
   "TTXWORKS.UsesRemaining": "Uses Remaining",
   "TTXWORKS.FocusCostToActivate": "Focus Cost to Activate",
-  "TTXWORKS.Passive": "Passive"
+  "TTXWORKS.Passive": "Passive",
+
+  "TTXWORKS.DateTime": "Date / Time",
+  "TTXWORKS.VisibleToPlayers": "Visible to Players",
+  "TTXWORKS.Details": "Details",
+  "TTXWORKS.Connections": "Connections",
+  "TTXWORKS.Description": "Description",
+  "TTXWORKS.Predecessors": "Predecessors",
+  "TTXWORKS.Followers": "Followers",
+  "TTXWORKS.CanvasPosition": "Canvas Position",
+  "TTXWORKS.LinkedActor": "Linked Actor (Player / Team)",
+  "TTXWORKS.Resolved": "Resolved",
+  "TTXWORKS.Outcome": "Outcome",
+
+  "TTXWORKS.TimelineMap": "Timeline Map",
+  "TTXWORKS.OpenTimeline": "Open Timeline Map",
+
+  "TTXWORKS.OutcomeUnresolved": "Unresolved",
+  "TTXWORKS.OutcomeCriticalSuccess": "Critical Success",
+  "TTXWORKS.OutcomeSuccess": "Full Success",
+  "TTXWORKS.OutcomeComplication": "Complication",
+  "TTXWORKS.OutcomeFailure": "Failure",
+  "TTXWORKS.OutcomeCriticalFailure": "Critical Failure",
+
+  "TTXWORKS.ConnectionTimeScaleHours": "Hours",
+  "TTXWORKS.ConnectionTimeScaleDays": "Days",
+  "TTXWORKS.ConnectionTimeScaleWeeks": "Weeks",
+  "TTXWORKS.ConnectionTimeScaleMonths": "Months"
 }

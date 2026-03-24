@@ -833,6 +833,398 @@
   min-height: 200px;
 }
 
+/* ============================================================
+   Timeline Map Application
+   ============================================================ */
+
+/* Outer app window — no padding so canvas fills edge-to-edge */
+.ttxworks.timeline-app .window-content {
+  padding: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.ttxworks-timeline-app {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: var(--ttx-bg);
+  font-family: var(--ttx-font);
+  color: var(--ttx-text);
+  user-select: none;
+}
+
+/* ── Toolbar ─────────────────────────────────────────────────── */
+.timeline-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 4px 10px;
+  background: var(--ttx-bg-mid);
+  border-bottom: 1px solid var(--ttx-border);
+  gap: 8px;
+  flex-shrink: 0;
+  min-height: 34px;
+}
+
+.toolbar-left,
+.toolbar-right {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex: 1;
+}
+
+.toolbar-right {
+  justify-content: flex-end;
+}
+
+.toolbar-center {
+  flex-shrink: 0;
+}
+
+.timeline-title {
+  font-weight: bold;
+  font-size: 0.95em;
+  letter-spacing: 0.05em;
+  color: var(--ttx-text-dim);
+  text-transform: uppercase;
+}
+
+.tl-mode-indicator {
+  font-size: 0.82em;
+  color: var(--ttx-text-dim);
+  font-style: italic;
+  padding: 2px 8px;
+  border-radius: var(--ttx-radius);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.tl-mode-indicator.active {
+  background: rgba(74, 144, 217, 0.15);
+  border: 1px solid var(--ttx-accent);
+  color: var(--ttx-accent);
+  font-style: normal;
+  font-weight: bold;
+}
+
+.tl-key-hint {
+  font-size: 0.72em;
+  color: var(--ttx-text-dim);
+  opacity: 0.6;
+}
+
+.tl-zoom-display {
+  font-size: 0.82em;
+  min-width: 38px;
+  text-align: center;
+  color: var(--ttx-text-dim);
+}
+
+/* ── Canvas wrap — PIXI canvas + SVG overlay stack ───────────── */
+.timeline-canvas-wrap {
+  position: relative;
+  flex: 1;
+  overflow: hidden;
+  cursor: default;
+  background: var(--ttx-bg);
+  background-image:
+    radial-gradient(circle, #3a4055 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+
+/* Faint grid dot pattern shifts with pan via CSS background-position (Phase 3) */
+
+canvas.timeline-canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;  /* PIXI handles its own events; SVG + DOM nodes receive pointer events */
+}
+
+svg.timeline-svg-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+}
+
+/* Connection lines — pointer-events enabled only on the paths themselves */
+svg.timeline-svg-overlay path.tl-connection {
+  pointer-events: stroke;
+  cursor: pointer;
+  stroke-width: 2;
+  fill: none;
+  stroke: var(--ttx-accent);
+  transition: stroke 0.15s;
+}
+
+svg.timeline-svg-overlay path.tl-connection:hover {
+  stroke: var(--ttx-gold);
+  stroke-width: 3;
+}
+
+svg.timeline-svg-overlay path.tl-connection.selected {
+  stroke: var(--ttx-gold);
+  stroke-width: 3;
+}
+
+/* Time-scale dash patterns applied via JS stroke-dasharray attribute */
+
+/* Connection duration label */
+svg.timeline-svg-overlay text.tl-conn-label {
+  font-size: 11px;
+  font-family: var(--ttx-font);
+  fill: var(--ttx-text-dim);
+  pointer-events: none;
+}
+
+/* ── Timeline nodes (DOM-based, positioned absolute) ─────────── */
+/* Phase 3 will use PIXI for rendering; these classes support
+   an optional DOM fallback and the property card system. */
+
+.timeline-node {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  cursor: pointer;
+  pointer-events: all;
+}
+
+.timeline-node.selected .node-shape {
+  filter: drop-shadow(0 0 6px var(--ttx-accent));
+}
+
+/* ── Property cards (single-click expand) ────────────────────── */
+.timeline-property-cards {
+  position: absolute;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+}
+
+.tl-property-card {
+  position: absolute;
+  pointer-events: all;
+  background: rgba(26, 29, 35, 0.92);
+  border: 1px solid var(--ttx-border);
+  border-radius: 6px;
+  padding: 8px 10px;
+  min-width: 180px;
+  max-width: 260px;
+  backdrop-filter: blur(4px);
+  font-size: 0.82em;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.5);
+  z-index: 10;
+}
+
+.tl-property-card .card-name {
+  font-weight: bold;
+  color: var(--ttx-text);
+  margin-bottom: 4px;
+}
+
+.tl-property-card .card-datetime {
+  font-size: 0.85em;
+  color: var(--ttx-accent);
+  margin-bottom: 4px;
+}
+
+.tl-property-card .card-description {
+  color: var(--ttx-text-dim);
+  font-style: italic;
+  margin-bottom: 4px;
+  max-height: 60px;
+  overflow: hidden;
+}
+
+.tl-property-card .card-actor-tn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--ttx-gold);
+  font-weight: bold;
+}
+
+.tl-property-card .card-connector-line {
+  position: absolute;
+  background: var(--ttx-border);
+  width: 1px;
+  transform-origin: top center;
+}
+
+/* ── Action outcome badges ───────────────────────────────────── */
+.outcome-badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-size: 0.75em;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.outcome-unresolved    { background: #2a2a2a; color: var(--ttx-text-dim); border: 1px solid #444; }
+.outcome-critical-success { background: #3d2f00; color: var(--ttx-gold); border: 1px solid var(--ttx-gold); }
+.outcome-success       { background: #1a4d2e; color: var(--ttx-green); border: 1px solid var(--ttx-green); }
+.outcome-complication  { background: #4d3a1a; color: var(--ttx-yellow); border: 1px solid var(--ttx-yellow); }
+.outcome-failure       { background: #4d1a1a; color: var(--ttx-red); border: 1px solid var(--ttx-red); }
+.outcome-critical-failure { background: #3d0000; color: var(--ttx-danger); border: 1px solid var(--ttx-danger); }
+
+/* ── Event/Action sheet headers ──────────────────────────────── */
+.ttxworks .event-header {
+  background: linear-gradient(135deg, var(--ttx-bg-mid), #1a2540);
+  border-bottom-color: var(--ttx-accent);
+}
+
+.ttxworks .action-header {
+  background: linear-gradient(135deg, var(--ttx-bg-mid), #1a2a1a);
+  border-bottom-color: var(--ttx-green);
+}
+
+.ttxworks .event-meta,
+.ttxworks .action-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.ttxworks .tn-badge {
+  background: rgba(74,144,217,0.2);
+  border: 1px solid var(--ttx-accent);
+  border-radius: 10px;
+  padding: 2px 8px;
+  font-size: 0.85em;
+  font-weight: bold;
+  color: var(--ttx-accent);
+}
+
+.ttxworks .tn-input-row {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.ttxworks .tn-pct {
+  color: var(--ttx-text-dim);
+}
+
+.ttxworks .action-roll-section {
+  margin-top: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+}
+
+.ttxworks .hint.warn {
+  color: var(--ttx-yellow);
+}
+
+/* ── Connections tab ─────────────────────────────────────────── */
+.ttxworks .connections-section {
+  margin-bottom: 16px;
+}
+
+.ttxworks .connections-section h3 {
+  font-size: 0.85em;
+  font-weight: bold;
+  color: var(--ttx-text-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border-bottom: 1px solid var(--ttx-border);
+  padding-bottom: 4px;
+  margin-bottom: 6px;
+}
+
+.ttxworks .connection-id-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.ttxworks .connection-id {
+  font-size: 0.8em;
+  font-family: monospace;
+  color: var(--ttx-accent);
+  background: var(--ttx-bg-mid);
+  border: 1px solid var(--ttx-border);
+  border-radius: 3px;
+  padding: 2px 6px;
+}
+
+.ttxworks .hint.empty {
+  color: var(--ttx-text-dim);
+  opacity: 0.6;
+}
+
+.ttxworks .canvas-position .position-display {
+  font-family: monospace;
+  font-size: 0.85em;
+  color: var(--ttx-text-dim);
+}
+
+/* ── Status bar ──────────────────────────────────────────────── */
+.timeline-status-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 3px 10px;
+  background: var(--ttx-bg-mid);
+  border-top: 1px solid var(--ttx-border);
+  flex-shrink: 0;
+  font-size: 0.75em;
+  color: var(--ttx-text-dim);
+}
+
+.tl-info-bar {
+  color: var(--ttx-text-dim);
+}
+
+.tl-help-text {
+  opacity: 0.5;
+  font-style: italic;
+}
+
+/* ── Create node dialog ──────────────────────────────────────── */
+.ttxworks-create-node-dialog .form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  margin-bottom: 8px;
+}
+
+.ttxworks-create-node-dialog label {
+  font-size: 0.82em;
+  font-weight: bold;
+  color: #aaa;
+  text-transform: uppercase;
+}
+
+.ttxworks-create-node-dialog .required {
+  color: var(--ttx-red);
+}
+
+.ttxworks-create-node-dialog input,
+.ttxworks-create-node-dialog textarea {
+  background: #2a2a2a;
+  border: 1px solid #444;
+  border-radius: 3px;
+  color: #eee;
+  padding: 4px 6px;
+  font-family: inherit;
+  font-size: 0.9em;
+}
+
 /* ── Responsive ─────────────────────────────────────────────── */
 @media (max-width: 560px) {
   .ttxworks .two-col { grid-template-columns: 1fr; }

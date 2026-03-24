@@ -1,0 +1,90 @@
+<form class="ttxworks sheet actor event" autocomplete="off">
+
+  <header class="sheet-header event-header">
+    <img class="profile-img" src="{{actor.img}}" title="{{actor.name}}" data-edit="img"/>
+    <div class="header-fields">
+      <h1 class="charname">
+        <input name="name" type="text" value="{{actor.name}}" placeholder="Event Name"/>
+      </h1>
+      <div class="event-meta">
+        <label>{{localize "TTXWORKS.DateTime"}}</label>
+        <input type="text" name="system.dateTime" value="{{system.dateTime}}"
+               placeholder="e.g. 2024-03-15 09:34 UTC"/>
+      </div>
+      <div class="event-visibility">
+        <label>
+          <input type="checkbox" name="system.visible" {{#if system.visible}}checked{{/if}}/>
+          {{localize "TTXWORKS.VisibleToPlayers"}}
+        </label>
+      </div>
+    </div>
+  </header>
+
+  <nav class="sheet-tabs tabs" data-group="primary">
+    <a class="item" data-tab="details">{{localize "TTXWORKS.Details"}}</a>
+    <a class="item" data-tab="connections">{{localize "TTXWORKS.Connections"}}</a>
+    <a class="item" data-tab="description">{{localize "TTXWORKS.Description"}}</a>
+  </nav>
+
+  <section class="sheet-body">
+
+    <div class="tab" data-tab="details">
+      <div class="form-group">
+        <label>{{localize "TTXWORKS.DateTime"}}</label>
+        <input type="text" name="system.dateTime" value="{{system.dateTime}}"
+               placeholder="e.g. 2024-03-15 09:34 UTC"/>
+        <p class="hint">Date and time this event occurred in the scenario.</p>
+      </div>
+      <div class="form-group">
+        <label>{{localize "TTXWORKS.VisibleToPlayers"}}</label>
+        <input type="checkbox" name="system.visible" {{#if system.visible}}checked{{/if}}/>
+        <p class="hint">When unchecked, this event and its timeline are hidden from players.</p>
+      </div>
+      <div class="form-group canvas-position">
+        <label>{{localize "TTXWORKS.CanvasPosition"}}</label>
+        <span class="position-display">
+          X: {{#if system.canvasX}}{{system.canvasX}}{{else}}—{{/if}}
+          &nbsp; Y: {{#if system.canvasY}}{{system.canvasY}}{{else}}—{{/if}}
+        </span>
+        <p class="hint">Set automatically when placed on the Timeline Map.</p>
+      </div>
+    </div>
+
+    <div class="tab" data-tab="connections">
+      <div class="connections-section">
+        <h3>{{localize "TTXWORKS.Predecessors"}}</h3>
+        <p class="hint">Events and Actions that lead into this Event. Managed via the Timeline Map.</p>
+        {{#if system.predecessors.length}}
+        <ul class="connection-id-list">
+          {{#each system.predecessors as |predId|}}
+          <li class="connection-id">{{predId}}</li>
+          {{/each}}
+        </ul>
+        {{else}}
+        <p class="hint empty">No predecessors — this may be a starting point.</p>
+        {{/if}}
+      </div>
+
+      <div class="connections-section">
+        <h3>{{localize "TTXWORKS.Followers"}}</h3>
+        <p class="hint">Events and Actions that follow this Event. Managed via the Timeline Map.</p>
+        {{#if system.followers.length}}
+        <ul class="connection-id-list">
+          {{#each system.followers as |followId|}}
+          <li class="connection-id">{{followId}}</li>
+          {{/each}}
+        </ul>
+        {{else}}
+        <p class="hint empty">No followers — this may be an end point.</p>
+        {{/if}}
+      </div>
+    </div>
+
+    <div class="tab" data-tab="description">
+      <div class="editor-wrapper">
+        {{editor system.description target="system.description" button=true owner=owner editable=editable}}
+      </div>
+    </div>
+
+  </section>
+</form>

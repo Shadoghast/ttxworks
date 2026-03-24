@@ -89,6 +89,51 @@ export class NodeData extends foundry.abstract.TypeDataModel {
   }
 }
 
+export class EventData extends foundry.abstract.TypeDataModel {
+  static defineSchema() {
+    return {
+      dateTime:     new fields.StringField({ required: true, blank: false, initial: "" }),
+      description:  new fields.HTMLField({ required: false, blank: true, initial: "" }),
+      predecessors: new fields.ArrayField(new fields.StringField({ blank: false })),
+      followers:    new fields.ArrayField(new fields.StringField({ blank: false })),
+      visible:      new fields.BooleanField({ required: true, initial: true }),
+      canvasX:      new fields.NumberField({ required: false, nullable: true, initial: null }),
+      canvasY:      new fields.NumberField({ required: false, nullable: true, initial: null })
+    };
+  }
+}
+
+export class ActionData extends foundry.abstract.TypeDataModel {
+  static defineSchema() {
+    return {
+      dateTime:      new fields.StringField({ required: true, blank: false, initial: "" }),
+      description:   new fields.HTMLField({ required: false, blank: true, initial: "" }),
+      predecessors:  new fields.ArrayField(new fields.StringField({ blank: false })),
+      followers:     new fields.ArrayField(new fields.StringField({ blank: false })),
+      visible:       new fields.BooleanField({ required: true, initial: true }),
+      canvasX:       new fields.NumberField({ required: false, nullable: true, initial: null }),
+      canvasY:       new fields.NumberField({ required: false, nullable: true, initial: null }),
+      actorRef:      new fields.StringField({ required: false, blank: true, nullable: true, initial: null }),
+      targetNumber:  new fields.NumberField({ required: true, integer: true, min: 1, max: 100, initial: 50 }),
+      resolved:      new fields.BooleanField({ required: true, initial: false }),
+      outcome:       new fields.StringField({ required: false, blank: true, nullable: true, initial: null })
+    };
+  }
+
+  get isResolved() { return this.resolved === true; }
+
+  get outcomeClass() {
+    const map = {
+      "critical-success": "outcome-critical-success",
+      "success":          "outcome-success",
+      "complication":     "outcome-complication",
+      "failure":          "outcome-failure",
+      "critical-failure": "outcome-critical-failure"
+    };
+    return map[this.outcome] ?? "outcome-unresolved";
+  }
+}
+
 // ============================================================
 // ITEM DATA MODELS
 // ============================================================

@@ -1,0 +1,56 @@
+<div class="ttxworks-timeline-app" tabindex="0">
+
+  {{!-- Toolbar --}}
+  <div class="timeline-toolbar">
+    <div class="toolbar-left">
+      <span class="tl-mode-indicator" title="Click to cancel current mode"></span>
+      <span class="tl-key-hint">E=Event · A=Action · C=Connect · T=Text · Esc=Cancel</span>
+    </div>
+    <div class="toolbar-center">
+      <span class="timeline-title">Timeline Map</span>
+    </div>
+    <div class="toolbar-right">
+      <button type="button" class="tl-fit ttxworks-btn small" title="Fit all nodes to view">
+        <i class="fas fa-compress-arrows-alt"></i>
+      </button>
+      <button type="button" class="tl-zoom-out ttxworks-btn small" title="Zoom out">
+        <i class="fas fa-minus"></i>
+      </button>
+      <span class="tl-zoom-display">{{zoom}}%</span>
+      <button type="button" class="tl-zoom-in ttxworks-btn small" title="Zoom in">
+        <i class="fas fa-plus"></i>
+      </button>
+      <button type="button" class="tl-zoom-reset ttxworks-btn small" title="Reset zoom and pan">
+        <i class="fas fa-crosshairs"></i>
+      </button>
+    </div>
+  </div>
+
+  {{!-- Canvas area: PIXI canvas + SVG overlay stacked --}}
+  <div class="timeline-canvas-wrap">
+    <canvas class="timeline-canvas"></canvas>
+    <svg class="timeline-svg-overlay" xmlns="http://www.w3.org/2000/svg">
+      {{!-- Defs: arrowhead marker and line-dash patterns --}}
+      <defs>
+        <marker id="ttx-arrow" markerWidth="8" markerHeight="8"
+                refX="6" refY="3" orient="auto">
+          <path d="M0,0 L0,6 L8,3 z" fill="#4a90d9"/>
+        </marker>
+        {{!-- Connection style patterns are applied via stroke-dasharray in JS --}}
+      </defs>
+      {{!-- All connection paths live inside this group; transform = pan/zoom --}}
+      <g class="svg-world"></g>
+    </svg>
+    {{!-- Property cards injected here by TimelineCanvas on single-click --}}
+    <div class="timeline-property-cards"></div>
+  </div>
+
+  {{!-- Status bar --}}
+  <div class="timeline-status-bar">
+    <span class="tl-info-bar">{{nodeCount}} nodes · {{connCount}} connections · {{zoom}}%</span>
+    <span class="tl-help-text">
+      Single-click = expand · Double-click = open sheet · Drag background = pan · Scroll = zoom
+    </span>
+  </div>
+
+</div>

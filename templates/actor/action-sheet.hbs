@@ -1,0 +1,132 @@
+<form class="ttxworks sheet actor action" autocomplete="off">
+
+  <header class="sheet-header action-header">
+    <img class="profile-img" src="{{actor.img}}" title="{{actor.name}}" data-edit="img"/>
+    <div class="header-fields">
+      <h1 class="charname">
+        <input name="name" type="text" value="{{actor.name}}" placeholder="Action Name"/>
+      </h1>
+      <div class="action-meta">
+        <span class="tn-badge">TN: {{system.targetNumber}}%</span>
+        {{#if system.resolved}}
+        <span class="outcome-badge {{system.outcomeClass}}">
+          {{#if system.outcome}}{{system.outcome}}{{else}}Resolved{{/if}}
+        </span>
+        {{else}}
+        <span class="outcome-badge outcome-unresolved">Unresolved</span>
+        {{/if}}
+      </div>
+    </div>
+  </header>
+
+  <nav class="sheet-tabs tabs" data-group="primary">
+    <a class="item" data-tab="details">{{localize "TTXWORKS.Details"}}</a>
+    <a class="item" data-tab="connections">{{localize "TTXWORKS.Connections"}}</a>
+    <a class="item" data-tab="description">{{localize "TTXWORKS.Description"}}</a>
+  </nav>
+
+  <section class="sheet-body">
+
+    <div class="tab" data-tab="details">
+      <div class="form-group">
+        <label>{{localize "TTXWORKS.DateTime"}}</label>
+        <input type="text" name="system.dateTime" value="{{system.dateTime}}"
+               placeholder="e.g. 2024-03-15 09:34 UTC"/>
+      </div>
+
+      <div class="form-group">
+        <label>{{localize "TTXWORKS.TargetNumber"}}</label>
+        <div class="tn-input-row">
+          <input type="number" name="system.targetNumber" value="{{system.targetNumber}}"
+                 min="1" max="100" style="width:70px"/>
+          <span class="tn-pct">%</span>
+        </div>
+        <p class="hint">Probability of a successful outcome (1–100%).</p>
+      </div>
+
+      <div class="form-group">
+        <label>{{localize "TTXWORKS.LinkedActor"}}</label>
+        <select name="system.actorRef">
+          <option value="">— None —</option>
+          {{#each actorOptions as |opt|}}
+          <option value="{{opt.id}}" {{#if (eq ../system.actorRef opt.id)}}selected{{/if}}>
+            {{opt.name}} ({{opt.type}})
+          </option>
+          {{/each}}
+        </select>
+        {{#if linkedActor}}
+        <button type="button" class="linked-actor-open ttxworks-btn small">
+          <i class="fas fa-external-link-alt"></i> Open {{linkedActor.name}}
+        </button>
+        {{/if}}
+      </div>
+
+      <div class="form-group">
+        <label>{{localize "TTXWORKS.Resolved"}}</label>
+        <input type="checkbox" name="system.resolved" {{#if system.resolved}}checked{{/if}}/>
+      </div>
+
+      {{#if system.resolved}}
+      <div class="form-group">
+        <label>{{localize "TTXWORKS.Outcome"}}</label>
+        <select name="system.outcome">
+          {{#each outcomeChoices as |label key|}}
+          <option value="{{key}}" {{#if (eq ../system.outcome key)}}selected{{/if}}>{{label}}</option>
+          {{/each}}
+        </select>
+      </div>
+      {{/if}}
+
+      <div class="form-group">
+        <label>{{localize "TTXWORKS.VisibleToPlayers"}}</label>
+        <input type="checkbox" name="system.visible" {{#if system.visible}}checked{{/if}}/>
+      </div>
+
+      <div class="action-roll-section">
+        <button type="button" class="action-roll-btn ttxworks-btn primary">
+          <i class="fas fa-dice-d10"></i> {{localize "TTXWORKS.RollAction"}}
+        </button>
+        {{#unless linkedActor}}
+        <p class="hint warn">Assign a Linked Actor above to enable rolling.</p>
+        {{/unless}}
+      </div>
+    </div>
+
+    <div class="tab" data-tab="connections">
+      <div class="connections-section">
+        <h3>{{localize "TTXWORKS.Predecessors"}}</h3>
+        <p class="hint">Events and Actions that lead into this Action. Managed via the Timeline Map.</p>
+        {{#if system.predecessors.length}}
+        <ul class="connection-id-list">
+          {{#each system.predecessors as |predId|}}
+          <li class="connection-id">{{predId}}</li>
+          {{/each}}
+        </ul>
+        {{else}}
+        <p class="hint empty">No predecessors.</p>
+        {{/if}}
+      </div>
+
+      <div class="connections-section">
+        <h3>{{localize "TTXWORKS.Followers"}}</h3>
+        <p class="hint">Events and Actions that follow this Action. Managed via the Timeline Map.</p>
+        {{#if system.followers.length}}
+        <ul class="connection-id-list">
+          {{#each system.followers as |followId|}}
+          <li class="connection-id">{{followId}}</li>
+          {{/each}}
+        </ul>
+        {{else}}
+        <p class="hint empty">No followers.</p>
+        {{/if}}
+      </div>
+    </div>
+
+    <div class="tab" data-tab="description">
+      <div class="editor-wrapper">
+        {{editor system.description target="system.description" button=true owner=owner editable=editable}}
+      </div>
+    </div>
+
+  </section>
+</form>
