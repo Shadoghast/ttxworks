@@ -986,10 +986,74 @@ svg.timeline-svg-overlay text.tl-conn-label {
   pointer-events: none;
 }
 
-/* ── Timeline nodes (DOM-based, positioned absolute) ─────────── */
-/* Phase 3 will use PIXI for rendering; these classes support
-   an optional DOM fallback and the property card system. */
+/* ── SVG Timeline nodes (Phase 3) ────────────────────────────── */
 
+svg.timeline-svg-overlay g.tl-node {
+  cursor: pointer;
+  pointer-events: all;
+}
+
+/* Event nodes — circles */
+svg.timeline-svg-overlay g.tl-event .node-shape {
+  fill: #131c2e;
+  stroke: var(--ttx-accent);
+  stroke-width: 2;
+  transition: filter 0.15s, stroke 0.15s;
+}
+
+svg.timeline-svg-overlay g.tl-event:hover .node-shape,
+svg.timeline-svg-overlay g.tl-event.selected .node-shape {
+  stroke: #7bbfff;
+  stroke-width: 2.5;
+  filter: drop-shadow(0 0 8px rgba(74, 144, 217, 0.65));
+}
+
+/* Action nodes — rounded rectangles */
+svg.timeline-svg-overlay g.tl-action .node-shape {
+  fill: #13201a;
+  stroke: var(--ttx-green);
+  stroke-width: 2;
+  transition: filter 0.15s, stroke 0.15s;
+}
+
+svg.timeline-svg-overlay g.tl-action:hover .node-shape,
+svg.timeline-svg-overlay g.tl-action.selected .node-shape {
+  stroke: #6aff8a;
+  stroke-width: 2.5;
+  filter: drop-shadow(0 0 8px rgba(46, 200, 90, 0.65));
+}
+
+/* Node text labels */
+svg.timeline-svg-overlay .node-name {
+  font-family: var(--ttx-font);
+  font-size: 11px;
+  font-weight: 600;
+  fill: var(--ttx-text);
+  pointer-events: none;
+}
+
+svg.timeline-svg-overlay .node-datetime {
+  font-family: var(--ttx-font);
+  font-size: 9px;
+  fill: var(--ttx-accent);
+  pointer-events: none;
+}
+
+svg.timeline-svg-overlay .node-tn {
+  font-family: var(--ttx-font);
+  font-size: 9px;
+  fill: var(--ttx-gold);
+  pointer-events: none;
+}
+
+/* Outcome colours on TN text */
+svg.timeline-svg-overlay .node-tn.outcome-critical-success { fill: var(--ttx-gold); }
+svg.timeline-svg-overlay .node-tn.outcome-success          { fill: var(--ttx-green); }
+svg.timeline-svg-overlay .node-tn.outcome-complication     { fill: var(--ttx-yellow); }
+svg.timeline-svg-overlay .node-tn.outcome-failure          { fill: var(--ttx-red); }
+svg.timeline-svg-overlay .node-tn.outcome-critical-failure { fill: var(--ttx-danger); }
+
+/* DOM fallback node class (legacy placeholder) */
 .timeline-node {
   position: absolute;
   transform: translate(-50%, -50%);
