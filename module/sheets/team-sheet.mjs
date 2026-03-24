@@ -83,6 +83,6 @@ export class TeamSheet extends ActorSheet {
   async _onStressPipClick(ev) {
     const idx = parseInt(ev.currentTarget.dataset.index);
     const cur = this.actor.system.stress.value;
-    await this.actor.update({ "system.stress.value": Math.max(0, Math.min(10, idx < cur ? idx : idx + 1)) });
+    await this.actor.update({ "system.stress.value": Math.max(0, Math.min(this.actor.system.stress.max ?? 6, idx < cur ? idx : idx + 1)) });
   }
 }

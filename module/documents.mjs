@@ -124,11 +124,9 @@ export class TTXWorksActor extends Actor {
               const focusSpend = parseInt(form.focusSpend.value);
               const extraPenalty = parseInt(form.extraPenalty.value);
 
-              // Enforce Rule of Two: max 2 positive, max 2 negative
-              const posCount = [skillBonus, assetBonus, focusSpend].filter(v => v > 0).length;
-              const totalPos = Math.min(posCount, 2) === 2
-                ? skillBonus + assetBonus + focusSpend
-                : skillBonus + assetBonus + focusSpend;
+              // Enforce Rule of Two: max 2 positive modifiers (keep the two largest)
+              const positives = [skillBonus, assetBonus, focusSpend].filter(v => v > 0).sort((a, b) => b - a);
+              const totalPos = positives.slice(0, 2).reduce((s, v) => s + v, 0);
 
               const totalNeg = stressPenalty + extraPenalty;
               const finalTN = Math.max(1, Math.min(95, baseTN + totalPos - totalNeg));
@@ -156,7 +154,7 @@ export class TTXWorksActor extends Actor {
                 if (stressRoll.total > 50) stressGained = 1;
               }
               if (stressGained > 0) {
-                const newStress = Math.min(10, (actor.system.stress.value ?? 0) + stressGained);
+                const newStress = Math.min(actor.system.stress.max ?? 6, (actor.system.stress.value ?? 0) + stressGained);
                 await actor.update({ "system.stress.value": newStress });
               }
 

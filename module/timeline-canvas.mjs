@@ -533,10 +533,6 @@ export class TimelineCanvas extends Application {
 
       if (ds.moved) {
         // Save final position
-        const finalPos = this._autoPositions.get(actor.id)
-          ?? { x: ds.startWorldX, y: ds.startWorldY };
-        // Use the override value if it was set (most common case)
-        const dragFinal = { x: ds.startWorldX, y: ds.startWorldY };
         const savedX = Math.round(ds.startWorldX + (e.clientX - ds.startScreenX) / this._state.zoom);
         const savedY = Math.round(ds.startWorldY + (e.clientY - ds.startScreenY) / this._state.zoom);
 

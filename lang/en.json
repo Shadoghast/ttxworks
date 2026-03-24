@@ -26,7 +26,6 @@
   "TTXWORKS.Stress": "Stress",
   "TTXWORKS.BurnedOut": "Burned Out",
   "TTXWORKS.Status": "Status",
-  "TTXWORKS.Objectives": "Objectives",
   "TTXWORKS.Restrictions": "Restrictions",
   "TTXWORKS.Biography": "Biography",
   "TTXWORKS.Role": "Role",
@@ -49,12 +48,6 @@
   "TTXWORKS.PositionControlled": "Controlled",
   "TTXWORKS.PositionRisky": "Risky",
   "TTXWORKS.PositionDesperate": "Desperate",
-
-  "TTXWORKS.OutcomeCriticalSuccess": "Critical Success",
-  "TTXWORKS.OutcomeSuccess": "Full Success",
-  "TTXWORKS.OutcomeComplication": "Complication",
-  "TTXWORKS.OutcomeFailure": "Failure",
-  "TTXWORKS.OutcomeCriticalFailure": "Critical Failure",
 
   "TTXWORKS.AssetCategoryHardware": "Hardware",
   "TTXWORKS.AssetCategorySoftware": "Software",

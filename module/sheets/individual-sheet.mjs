@@ -82,7 +82,7 @@ export class IndividualSheet extends ActorSheet {
     const idx = parseInt(ev.currentTarget.dataset.index);
     const current = this.actor.system.stress.value;
     const newVal = (idx < current) ? idx : idx + 1;
-    await this.actor.update({ "system.stress.value": Math.max(0, Math.min(10, newVal)) });
+    await this.actor.update({ "system.stress.value": Math.max(0, Math.min(this.actor.system.stress.max ?? 6, newVal)) });
   }
 
   async _onAddObjective() {
