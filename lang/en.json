@@ -128,6 +128,9 @@
   "TTXWORKS.TimelineMap": "Timeline Map",
   "TTXWORKS.OpenTimeline": "Open Timeline Map",
 
+  "TTXWORKS.SettingExerciseModeLabel": "Exercise Mode",
+  "TTXWORKS.SettingExerciseModeHint": "Timeline Mode: work on the Timeline Map using Events and Actions. Detail Mode: use Individual, Team, Adversary, and Node actors with full character sheets, Focus, and Stress tracking. The Actors sidebar and Create Actor dialog will only show the types relevant to the active mode.",
+
   "TTXWORKS.OutcomeUnresolved": "Unresolved",
   "TTXWORKS.OutcomeCriticalSuccess": "Critical Success",
   "TTXWORKS.OutcomeSuccess": "Full Success",
